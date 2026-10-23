@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.6.4 — 2026-10-23
+
+Collection detection completed (A7 phase 2):
+
+- **Toys**: all 6 Retail toy entries carry verified item IDs,
+  each confirmed on its Wowhead item page — the Trans-
+  Dimensional Bird Whistle (Pepe), Vial of Green Goo,
+  Hyper-Compressed Ocean, Gem of Acquiescence, Enlightened
+  Hearthstone, and the Black Dragon's Challenge Dummy.
+- **Mounts**: all 39 Retail mount entries carry verified mount
+  journal IDs, each read from the mount's own WarcraftMounts
+  page (its "Blizzard ID" is the journal ID — proven against
+  Lucid Nightmare, whose item ID differs, and cross-checked on
+  canonical mounts). The Trader's Ottuks set counts as
+  collected only when all six ottuks are owned.
+- Corrections found while sourcing: the entry formerly named
+  "Tahonta" is the **Bonehoof Tauralus** (Tahonta is the rare
+  elite that drops it; the Necrolord drop rules are now in the
+  entry); the Labyrinth of Kindo'jan mount is confirmed as the
+  **Loa-Blessed Wayfarer**; the 12.1.5 gold-sink mount is named
+  — **Sporebearer Fungal Strider**, with its utility add-on
+  costs added.
+- In total, 60 of the 92 Retail entries now detect collection
+  automatically (15 pets, 6 toys, 39 mounts). The rest keep
+  quest-flag and manual tracking.
+
 ## 0.6.3 — 2026-10-23
 
 Second look fix, from a live screenshot of 0.6.2 (which confirmed
