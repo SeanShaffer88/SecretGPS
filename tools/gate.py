@@ -54,7 +54,8 @@ def main():
     for data, want in [("Data_Retail.lua", 21), ("Data_Expansions1.lua", 29),
                        ("Data_Expansions2.lua", 37), ("Data_Retail_Fixes.lua", 0),
                        ("Data_Forever.lua", 4), ("Data_Forever2.lua", 8),
-                       ("Data_Forever3.lua", 10), ("Data_Forever_Books.lua", 0)]:
+                       ("Data_Forever3.lua", 10), ("Data_Forever_Books.lua", 0),
+                       ("Data_Retail_MindSeeker.lua", 5)]:
         p = ADDON / data
         if p.exists():
             n = len(re.findall(r"^Add\(\{", p.read_text(), re.M))
@@ -78,10 +79,15 @@ def main():
     print(f"Data_Forever_Books.lua: {nb} located books (want 37)")
     if nb != 37:
         failures.append(f"Library books {nb}, want 37")
-    # mapID audit: across all data files, only report-published mapIDs
+    # mapID audit: across all data files, only guide-published mapIDs
     # may appear (13 Pearl, 46 Karazhan Catacombs, 885 Antoran, 896
-    # Drustvar, 1543 Maw, 2025 Thaldraszus, 2255 Azj-Kahet).
-    allowed = {"13", "46", "885", "896", "1543", "2025", "2255"}
+    # Drustvar, 1543 Maw, 2025 Thaldraszus, 2255 Azj-Kahet; v0.6.0
+    # added the IDs published by the Warcraft Secrets guides for
+    # Tobias/Jumpjets/Scholomance/Wan'be/Felcyclist/Courage/Glimr).
+    allowed = {"13", "46", "885", "895", "896", "1543", "2025", "2255",
+               "10", "17", "22", "23", "64", "77", "107", "109", "114",
+               "115", "116", "210", "376", "539", "554", "630", "650",
+               "680", "862", "1533", "2024", "2112"}
     for path in lua_files:
         for mid in re.findall(r"mapID\s*=\s*(\d+)", path.read_text()):
             if mid not in allowed:
