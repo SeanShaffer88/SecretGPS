@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.0 — 2026-10-23
+
+- **Renamed: SecretsGPS is now SecretGPS** (SEAN's direction) —
+  addon folder, both TOCs, chat prefix, zip names, the GitHub
+  repository (now SeanShaffer88/SecretGPS), and the SavedVariables
+  store (`SecretGPSDB`); progress tracked under the SecretsGPS
+  name resets once on upgrade. Slash commands are now `/sgps`
+  and `/secretgps`; `/sa` still works.
+- No catalog or feature changes: still 109 entries (87 Retail +
+  22 Forever), the SecretTracker window, and TomTom/native
+  waypoints from v0.4.0.
+
 ## 0.4.0 — 2026-10-23 (pre-release build for in-game testing)
 
 - **Renamed: SecretAtlas is now SecretsGPS** (SEAN's direction) —
