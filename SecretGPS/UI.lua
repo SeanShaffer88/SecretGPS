@@ -327,7 +327,7 @@ function UI.Build()
     end
     if typeMenu.SetBackdrop then
         typeMenu:SetBackdrop({
-            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+            bgFile = "Interface\\Buttons\\WHITE8x8",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             tile = true, tileSize = 16, edgeSize = 12,
             insets = { left = 3, right = 3, top = 3, bottom = 3 },
@@ -497,21 +497,23 @@ function UI.Build()
     end)
     listDown:SetScript("OnLeave", HideTip)
 
-    -- Detail panel: parchment, like the classic frame's quest page.
+    -- Detail panel: parchment, like the classic frame's quest
+    -- page. The title and meta are parented TO the panel: regions
+    -- of the window frame draw below child frames, which is how
+    -- v0.6.2's translucent panel veiled them into ghosts.
     local detailPanel = CreateFrame("Frame", nil, f, "BackdropTemplate")
     detailPanel:SetPoint("TOPLEFT", 338, -94)
     detailPanel:SetPoint("BOTTOMRIGHT", -10, 30)
     if ns.StylePanel then ns.StylePanel(detailPanel, true) end
 
-    local dn = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    if QuestTitleFont then dn:SetFontObject(QuestTitleFont) end
-    dn:SetPoint("TOPLEFT", 348, -102)
+    local dn = detailPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    dn:SetPoint("TOPLEFT", 10, -8)
     dn:SetWidth(566)
     dn:SetJustifyH("LEFT")
     dn:SetTextColor(0.35, 0.08, 0.03)
     UI.detailName = dn
-    local dm = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    dm:SetPoint("TOPLEFT", 348, -128)
+    local dm = detailPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    dm:SetPoint("TOPLEFT", 10, -34)
     dm:SetWidth(566)
     dm:SetJustifyH("LEFT")
     dm:SetJustifyV("TOP")
@@ -701,9 +703,17 @@ function UI.Build()
         if type(mfl) == "number" and mb.SetFrameLevel then
             mb:SetFrameLevel(mfl + 5)
         end
-        local icon = mb:CreateTexture(nil, "ARTWORK")
-        icon:SetSize(22, 22)
-        icon:SetPoint("CENTER", 0, 1)
+        local ring = mb:CreateTexture(nil, "BACKGROUND")
+        ring:SetSize(52, 52)
+        ring:SetPoint("CENTER", 0, 0)
+        ring:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+        -- The icon draws ABOVE the ring (OVERLAY vs BACKGROUND):
+        -- with the icon underneath, this client's tracking-border
+        -- texture hides it - the button read as an empty ring in
+        -- SEAN's screenshots even once the icon path was fixed.
+        local icon = mb:CreateTexture(nil, "OVERLAY")
+        icon:SetSize(24, 24)
+        icon:SetPoint("CENTER", 0, 0)
         for _, path in ipairs({
             "Interface\\Icons\\INV_Misc_Book_09",
             "Interface\\Icons\\INV_Misc_Book_07",
@@ -712,16 +722,20 @@ function UI.Build()
             if icon:SetTexture(path) ~= false then break end
         end
         if icon.SetTexCoord then icon:SetTexCoord(0.08, 0.92, 0.08, 0.92) end
-        local ring = mb:CreateTexture(nil, "OVERLAY")
-        ring:SetSize(52, 52)
-        ring:SetPoint("CENTER", 0, 0)
-        ring:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+        -- Sit the button on the minimap's rim, whatever its size.
+        local radius = 80
+        if Minimap.GetWidth then
+            local mw = Minimap:GetWidth()
+            if type(mw) == "number" and mw > 0 then
+                radius = math.max(68, math.min(88, mw / 2))
+            end
+        end
         local angle = (ns.db and ns.db.settings and
             ns.db.settings.minimapAngle) or math.rad(215)
         local function Place()
             mb:ClearAllPoints()
             mb:SetPoint("CENTER", Minimap, "CENTER",
-                math.cos(angle) * 80, math.sin(angle) * 80)
+                math.cos(angle) * radius, math.sin(angle) * radius)
         end
         Place()
         if mb.RegisterForClicks then
