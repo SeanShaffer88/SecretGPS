@@ -6,7 +6,7 @@
 -- navigation and checklist display only.
 local ADDON, ns = ...
 
-ns.VERSION = "0.6.2"
+ns.VERSION = "0.6.3"
 ns.Entries = ns.Entries or {}
 ns.ById = {}
 
@@ -40,10 +40,16 @@ ns.BuildIndex = BuildIndex
 -- CONTRACT: pass only frames created with BackdropTemplate (plain
 -- frames have no SetBackdrop on modern Mainline / Forever); the
 -- SetBackdrop presence check below enforces it at runtime.
+-- Panel backgrounds use WHITE8x8, never UI-Tooltip-Background:
+-- that texture is grey and translucent, so in v0.6.2 it greyed the
+-- parchment and veiled the detail title/meta drawn under the panel
+-- (SEAN's live screenshot). WHITE8x8 is opaque, so the tint IS the
+-- color. Texts that live on a panel are parented TO the panel, so
+-- they always draw above it.
 function ns.StyleQuestLog(frame)
     if not frame or not frame.SetBackdrop then return end
     frame:SetBackdrop({
-        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        bgFile = "Interface\\Buttons\\WHITE8x8",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
         tile = true, tileSize = 16, edgeSize = 16,
         insets = { left = 4, right = 4, top = 4, bottom = 4 },
@@ -57,7 +63,7 @@ end
 function ns.StylePanel(frame, parchment)
     if not frame or not frame.SetBackdrop then return end
     frame:SetBackdrop({
-        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        bgFile = "Interface\\Buttons\\WHITE8x8",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
         tile = true, tileSize = 16, edgeSize = 12,
         insets = { left = 3, right = 3, top = 3, bottom = 3 },
