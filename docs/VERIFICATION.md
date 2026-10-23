@@ -168,7 +168,8 @@ ring to BACKGROUND, radius derived from the minimap's width.
 | GitHub publish: per-file upserts OK; blob audit 27/29 MATCH at run time — Data_Expansions1/2 had already advanced locally with the (unpublished) phase-2b toy data; both remote blobs verified byte-identical to the v0.6.3 commit (a967747c / 9c759875) | ALL MATCH as published | Verified |
 | GitHub pre-release v0.6.3 with both zips attached | Published, page read back | Verified |
 | Note: main advanced one data commit past the release during the VERIFICATION publish (phase-2b toy IDs, commit 2397ac5); the v0.6.3 zips predate it — toy collection detection ships in the next release | — | Verified |
-| In-game — v0.6.3 (opaque parchment + dark title/meta, minimap book inside ring, tracker panel texts) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
+| In-game — v0.6.3 look (opaque parchment + dark title/meta, tracker panel texts) | SEAN screenshot 2026-10-23 (v0.6.4 build): parchment is true cream, title dark red and crisp, meta fully readable — "looks fine" | Verified |
+| In-game — minimap book inside ring | Not in frame in any screenshot yet | **Unverified** |
 
 ## v0.6.4 — collection detection completed (2026-10-23)
 
@@ -190,4 +191,21 @@ auto-mark the entry) upgrades them to Verified.
 | Packaging: v0.6.4 Retail (59,645 B) + Forever (30,360 B) zips, contents == TOC lists | PASS | Partially Verified |
 | GitHub publish: per-file upserts OK from a clean tree; blob audit run twice (API reads failed partway through each run) — the union of both runs covers all 29 files | ALL MATCH (union) | Verified |
 | GitHub pre-release v0.6.4 with both zips attached | Published, page read back | Verified |
-| In-game — collection detection (owned pet/toy/mount auto-solves) | NOT RUN | **Unverified** |
+| In-game — v0.6.4 build (SEAN screenshot 2026-10-23): header reads "Mind-Seeker: 2 solved of 33"; Riddler's Mind-Worm and Slime Serpent show [done] in the list | RUN | Partially Verified (solved detection is live in game; the screenshot alone can't split collection vs quest-flag credit for those two) |
+
+## v0.6.5 — text size control (2026-10-23)
+
+SEAN's v0.6.4 screenshot verdict: "looks fine except text is
+small" — plus a request for a text resize option. The catalog
+header gains a Text button (100/110/120/130/145%, new default
+120%); /sgps text cycles the same setting; both windows scale
+with the text so layout never overlaps; the choice persists in
+settings.textScale and applies to the tracker on build and on
+change.
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (4-way version consistency 0.6.5) | PASS (exit 0) | Partially Verified |
+| Harness, both TOCs (incl. new "text scale cycles via slash" scenario) | PASS | Partially Verified |
+| Packaging: v0.6.5 Retail (60,252 B) + Forever (30,967 B) zips, contents == TOC lists | PASS | Partially Verified |
+| In-game — text sizes render/read as intended | NOT RUN | **Unverified** |
