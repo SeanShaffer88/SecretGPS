@@ -42,14 +42,16 @@ local function Build()
     f:RegisterForDrag("LeftButton")
     f:SetScript("OnDragStart", function(self) self:StartMoving() end)
     f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-    -- Same classic quest log look as the catalog (smaller tiles).
-    if ns.StyleQuestLog then ns.StyleQuestLog(f, 128, 98) end
+    -- Same classic quest log look as the catalog: dark frame,
+    -- parchment panel for the step text.
+    if ns.StyleQuestLog then ns.StyleQuestLog(f) end
     frame = f
     ns.Tracker.frame = f
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", 14, -12)
-    title:SetText("|cff9c2b12Secret Tracker|r")
+    title:SetText("Secret Tracker")
+    title:SetTextColor(1, 0.85, 0.4)
     local close = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     close:SetSize(20, 20)
     close:SetPoint("TOPRIGHT", -10, -10)
@@ -61,36 +63,42 @@ local function Build()
     nameFS:SetWidth(302)
     nameFS:SetJustifyH("LEFT")
     nameFS:SetWordWrap(true)
-    nameFS:SetTextColor(0.35, 0.08, 0.03)
+    nameFS:SetTextColor(1, 0.85, 0.45)
 
     countFS = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     countFS:SetPoint("TOPLEFT", 14, -58)
     countFS:SetWidth(302)
     countFS:SetJustifyH("LEFT")
-    countFS:SetTextColor(0.32, 0.24, 0.14)
+    countFS:SetTextColor(0.85, 0.78, 0.6)
 
-    -- Progress bar (A8): parchment track, brick-red fill.
+    -- Progress bar (A8): pale track, brick-red fill.
     local barBg = f:CreateTexture(nil, "ARTWORK")
     barBg:SetPoint("TOPLEFT", 14, -72)
     barBg:SetSize(302, 6)
-    barBg:SetColorTexture(0.30, 0.20, 0.08, 0.35)
+    barBg:SetColorTexture(0.93, 0.86, 0.68, 0.25)
     barFill = f:CreateTexture(nil, "OVERLAY")
     barFill:SetPoint("TOPLEFT", 14, -72)
     barFill:SetSize(1, 6)
-    barFill:SetColorTexture(0.61, 0.17, 0.07, 0.9)
+    barFill:SetColorTexture(0.75, 0.22, 0.1, 0.95)
+
+    -- Parchment panel behind the step text and zone line.
+    local stepPanel = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    stepPanel:SetPoint("TOPLEFT", 10, -80)
+    stepPanel:SetPoint("BOTTOMRIGHT", -10, 44)
+    if ns.StylePanel then ns.StylePanel(stepPanel, true) end
 
     stepFS = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    stepFS:SetPoint("TOPLEFT", 14, -84)
-    stepFS:SetWidth(302)
+    stepFS:SetPoint("TOPLEFT", 18, -88)
+    stepFS:SetWidth(286)
     stepFS:SetHeight(56)
     stepFS:SetJustifyH("LEFT")
     stepFS:SetJustifyV("TOP")
     stepFS:SetWordWrap(true)
     stepFS:SetTextColor(0.16, 0.11, 0.05)
 
-    zoneFS = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    zoneFS:SetPoint("TOPLEFT", 14, -142)
-    zoneFS:SetWidth(302)
+    zoneFS = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    zoneFS:SetPoint("BOTTOMLEFT", stepPanel, "BOTTOMLEFT", 8, 6)
+    zoneFS:SetWidth(286)
     zoneFS:SetJustifyH("LEFT")
     zoneFS:SetTextColor(0.32, 0.24, 0.14)
 
