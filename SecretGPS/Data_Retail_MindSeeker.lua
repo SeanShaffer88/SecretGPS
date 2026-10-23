@@ -10,6 +10,7 @@ local function Add(e) ns.Entries[#ns.Entries + 1] = e end
 
 Add({
   id = "tobias", name = "Tobias", type = "pet",
+  collection = { kind = "pet", id = 4263 },
   expansion = "dragonflight", game = "retail", zone = "Azeroth-wide",
   reward = "Tobias pet (Community Rumor Mill achievement)", mindSeeker = true,
   solo = "Solo (one satchel needs 2 extra Torch bearers)", difficulty = 3, estTime = "~1-2h",
