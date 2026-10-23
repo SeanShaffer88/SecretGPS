@@ -6,7 +6,7 @@
 -- navigation and checklist display only.
 local ADDON, ns = ...
 
-ns.VERSION = "0.6.3"
+ns.VERSION = "0.6.4"
 ns.Entries = ns.Entries or {}
 ns.ById = {}
 
