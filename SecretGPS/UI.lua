@@ -150,7 +150,7 @@ function UI.Refresh()
             if e then
                 local done, total = ns.EntryStepProgress(e)
                 local mark = ns.IsEntrySolved(e) and "|cff7dff7d[done]|r " or ""
-                local tmark = (ns.db and ns.db.tracked and ns.db.tracked.id == e.id) and "|cff9c2b12>> |r" or ""
+                local tmark = (ns.db and ns.db.tracked and ns.db.tracked.id == e.id) and "|cffe5484d>> |r" or ""
                 row.text:SetText(tmark .. mark .. tostring(e.name))
                 row.sub:SetText(EntryTypeLabel(e) .. " - " ..
                     (EXPANSION_LABELS[e.expansion] or "") .. "  " .. done .. "/" .. total)
@@ -185,8 +185,8 @@ function UI.Refresh()
             local idx = state.stepOffset + i
             local step = e and e.steps and e.steps[idx] or nil
             if step then
-                local box = ns.IsStepDone(e, idx) and "|cff7dff7d[x]|r" or "[ ]"
-                local wp = (step.x and step.y) and "  |cff6ec3ff[WP]|r" or ""
+                local box = ns.IsStepDone(e, idx) and "|cff1d7a1d[x]|r" or "[ ]"
+                local wp = (step.x and step.y) and "  |cff2050c8[WP]|r" or ""
                 row.text:SetText(box .. " " .. idx .. ". " .. tostring(step.text) .. wp)
                 row.stepIndex = idx
                 if row.wpBtn then
@@ -243,16 +243,27 @@ function UI.Build()
     end)
     f:SetScript("OnDragStart", function(self) self:StartMoving() end)
     f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-    -- Classic quest log look (SEAN, 2026-10-23): parchment book art
-    -- via the shared helper; text below uses ink colors to match.
-    if ns.StyleQuestLog then ns.StyleQuestLog(f, 256, 256) end
+    -- Classic quest log look (SEAN, 2026-10-23): dark frame via
+    -- the shared helper; a black list panel and a parchment guide
+    -- panel are laid out below.
+    if ns.StyleQuestLog then ns.StyleQuestLog(f) end
     f:Hide()
     UI.frame = f
 
+    -- Book medallion next to the title, echoing the classic frame.
+    -- Item icons are core assets that resolve by path on every
+    -- client (the old quest-log book icon path renders blank on the
+    -- current one - SEAN's minimap screenshot, 2026-10-23).
+    local emblem = f:CreateTexture(nil, "ARTWORK")
+    emblem:SetSize(30, 30)
+    emblem:SetPoint("TOPLEFT", 12, -8)
+    emblem:SetTexture("Interface\\Icons\\INV_Misc_Book_09")
+    if emblem.SetTexCoord then emblem:SetTexCoord(0.08, 0.92, 0.08, 0.92) end
+
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    title:SetPoint("TOPLEFT", 16, -12)
-    title:SetText("|cff9c2b12SecretGPS|r - Hidden Secrets & Collectibles")
-    title:SetTextColor(0.25, 0.16, 0.08)
+    title:SetPoint("TOPLEFT", 50, -14)
+    title:SetText("SecretGPS - Hidden Secrets & Collectibles")
+    title:SetTextColor(1, 0.85, 0.4)
     local close = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     close:SetSize(24, 24)
     close:SetPoint("TOPRIGHT", -10, -10)
@@ -264,14 +275,14 @@ function UI.Build()
     close:SetScript("OnLeave", HideTip)
 
     local ms = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    ms:SetPoint("TOPLEFT", 16, -38)
+    ms:SetPoint("TOPLEFT", 16, -48)
     ms:SetText("")
-    ms:SetTextColor(0.32, 0.24, 0.14)
+    ms:SetTextColor(0.85, 0.78, 0.6)
     UI.msText = ms
 
     local search = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
     search:SetSize(300, 22)
-    search:SetPoint("TOPLEFT", 16, -58)
+    search:SetPoint("TOPLEFT", 16, -66)
     search:SetAutoFocus(false)
     search:SetScript("OnTextChanged", function(self)
         state.search = (self:GetText() or ""):lower()
@@ -288,12 +299,12 @@ function UI.Build()
     local searchLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     searchLabel:SetPoint("LEFT", search, "RIGHT", 8, 0)
     searchLabel:SetText("Search")
-    searchLabel:SetTextColor(0.16, 0.11, 0.05)
+    searchLabel:SetTextColor(0.85, 0.78, 0.6)
 
     local ToggleTypeMenu -- forward-declared; defined with the menu below
     local typeBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     typeBtn:SetSize(170, 22)
-    typeBtn:SetPoint("TOPLEFT", 470, -58)
+    typeBtn:SetPoint("TOPLEFT", 470, -66)
     typeBtn:SetText("Type: All")
     typeBtn:SetScript("OnClick", function()
         if ToggleTypeMenu then ToggleTypeMenu() end
@@ -305,8 +316,8 @@ function UI.Build()
     typeBtn:SetScript("OnLeave", HideTip)
     UI.typeBtn = typeBtn
 
-    -- Type filter dropdown (A4): a small parchment menu under the
-    -- Type button, replacing click-to-cycle.
+    -- Type filter dropdown (A4): a small dark menu under the Type
+    -- button, replacing click-to-cycle.
     local typeMenu = CreateFrame("Frame", nil, f, "BackdropTemplate")
     typeMenu:SetSize(186, 100)
     typeMenu:SetPoint("TOPLEFT", typeBtn, "BOTTOMLEFT", 0, -2)
@@ -321,8 +332,8 @@ function UI.Build()
             tile = true, tileSize = 16, edgeSize = 12,
             insets = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        typeMenu:SetBackdropColor(0.93, 0.86, 0.68, 0.98)
-        typeMenu:SetBackdropBorderColor(0.35, 0.20, 0.08, 1)
+        typeMenu:SetBackdropColor(0.07, 0.06, 0.05, 0.98)
+        typeMenu:SetBackdropBorderColor(0.5, 0.4, 0.22, 1)
     end
     typeMenu:Hide()
     UI.typeMenu = typeMenu
@@ -333,11 +344,11 @@ function UI.Build()
         r:SetPoint("TOPLEFT", 6, -6 - (i - 1) * 20)
         local rt = r:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         rt:SetPoint("LEFT", 4, 0)
-        rt:SetTextColor(0.16, 0.11, 0.05)
+        rt:SetTextColor(0.92, 0.86, 0.7)
         r.text = rt
         local hov = r:CreateTexture(nil, "BACKGROUND")
         hov:SetAllPoints(r)
-        hov:SetColorTexture(0.30, 0.20, 0.08, 0.15)
+        hov:SetColorTexture(1, 0.85, 0.4, 0.15)
         hov:Hide()
         r.hov = hov
         r:SetScript("OnEnter", function(self) if self.hov then self.hov:Show() end end)
@@ -390,7 +401,7 @@ function UI.Build()
 
     local hideBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     hideBtn:SetSize(170, 22)
-    hideBtn:SetPoint("TOPLEFT", 650, -58)
+    hideBtn:SetPoint("TOPLEFT", 650, -66)
     hideBtn:SetText("Hide solved: Off")
     hideBtn:SetScript("OnClick", function()
         if ns.db then ns.db.hideCompleted = not ns.db.hideCompleted end
@@ -404,11 +415,18 @@ function UI.Build()
     end)
     hideBtn:SetScript("OnLeave", HideTip)
 
+    -- List panel: black, like the classic frame's quest list.
+    local listPanel = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    listPanel:SetPoint("TOPLEFT", 10, -94)
+    listPanel:SetPoint("BOTTOMLEFT", 10, 30)
+    listPanel:SetWidth(320)
+    if ns.StylePanel then ns.StylePanel(listPanel, false) end
+
     UI.listRows = {}
     for i = 1, LIST_ROWS do
         local b = CreateFrame("Button", nil, f)
         b:SetSize(300, 30)
-        b:SetPoint("TOPLEFT", 16, -92 - (i - 1) * 32)
+        b:SetPoint("TOPLEFT", 16, -100 - (i - 1) * 32)
         local t = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         t:SetPoint("TOPLEFT", 4, -2)
         t:SetWidth(292)
@@ -419,16 +437,16 @@ function UI.Build()
         s:SetJustifyH("LEFT")
         b.text = t
         b.sub = s
-        t:SetTextColor(0.16, 0.11, 0.05)
-        s:SetTextColor(0.32, 0.24, 0.14)
+        t:SetTextColor(1, 0.82, 0.25)
+        s:SetTextColor(0.72, 0.7, 0.64)
         local hl = b:CreateTexture(nil, "BACKGROUND")
         hl:SetAllPoints(b)
-        hl:SetColorTexture(0.55, 0.18, 0.08, 0.28)
+        hl:SetColorTexture(0.9, 0.65, 0.2, 0.28)
         hl:Hide()
         b.hl = hl
         local hov = b:CreateTexture(nil, "BACKGROUND")
         hov:SetAllPoints(b)
-        hov:SetColorTexture(0.30, 0.20, 0.08, 0.12)
+        hov:SetColorTexture(1, 1, 1, 0.07)
         hov:Hide()
         b.hov = hov
         if b.EnableMouseWheel then b:EnableMouseWheel(true) end
@@ -454,7 +472,7 @@ function UI.Build()
     end
     local listUp = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     listUp:SetSize(70, 20)
-    listUp:SetPoint("TOPLEFT", 16, -92 - LIST_ROWS * 32 - 4)
+    listUp:SetPoint("TOPLEFT", 16, -100 - LIST_ROWS * 32 - 4)
     listUp:SetText("Up")
     listUp:SetScript("OnClick", function()
         state.listOffset = math.max(0, state.listOffset - LIST_ROWS)
@@ -479,15 +497,22 @@ function UI.Build()
     end)
     listDown:SetScript("OnLeave", HideTip)
 
+    -- Detail panel: parchment, like the classic frame's quest page.
+    local detailPanel = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    detailPanel:SetPoint("TOPLEFT", 338, -94)
+    detailPanel:SetPoint("BOTTOMRIGHT", -10, 30)
+    if ns.StylePanel then ns.StylePanel(detailPanel, true) end
+
     local dn = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    dn:SetPoint("TOPLEFT", 340, -92)
-    dn:SetWidth(570)
+    if QuestTitleFont then dn:SetFontObject(QuestTitleFont) end
+    dn:SetPoint("TOPLEFT", 348, -102)
+    dn:SetWidth(566)
     dn:SetJustifyH("LEFT")
     dn:SetTextColor(0.35, 0.08, 0.03)
     UI.detailName = dn
     local dm = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    dm:SetPoint("TOPLEFT", 340, -118)
-    dm:SetWidth(570)
+    dm:SetPoint("TOPLEFT", 348, -128)
+    dm:SetWidth(566)
     dm:SetJustifyH("LEFT")
     dm:SetJustifyV("TOP")
     dm:SetWordWrap(true)
@@ -498,7 +523,7 @@ function UI.Build()
     for i = 1, STEP_ROWS do
         local b = CreateFrame("Button", nil, f)
         b:SetSize(540, 38)
-        b:SetPoint("TOPLEFT", 340, -246 - (i - 1) * 38)
+        b:SetPoint("TOPLEFT", 348, -240 - (i - 1) * 38)
         local t = b:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         t:SetPoint("TOPLEFT", 2, -2)
         t:SetWidth(536)
@@ -585,7 +610,7 @@ function UI.Build()
     end
     local stepUp = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     stepUp:SetSize(70, 20)
-    stepUp:SetPoint("TOPLEFT", 340, -246 - STEP_ROWS * 38 - 4)
+    stepUp:SetPoint("TOPLEFT", 348, -240 - STEP_ROWS * 38 - 4)
     stepUp:SetText("Up")
     stepUp:SetScript("OnClick", function()
         state.stepOffset = math.max(0, state.stepOffset - STEP_ROWS)
@@ -648,19 +673,24 @@ function UI.Build()
     UI.trackBtn = trackBtn
 
     local ds = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    ds:SetPoint("BOTTOMLEFT", 340, 12)
-    ds:SetWidth(570)
-    ds:SetJustifyH("LEFT")
-    ds:SetTextColor(0.32, 0.24, 0.14)
+    ds:SetPoint("BOTTOMRIGHT", -16, 10)
+    ds:SetWidth(430)
+    ds:SetJustifyH("RIGHT")
+    ds:SetTextColor(0.8, 0.72, 0.55)
     UI.detailSource = ds
 
     local hint = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    hint:SetPoint("BOTTOMLEFT", 16, 12)
-    hint:SetText("Click a step to tick it. WP = waypoint, Trk = track from this step. /sgps help")
-    hint:SetTextColor(0.32, 0.24, 0.14)
+    hint:SetPoint("BOTTOMLEFT", 16, 10)
+    hint:SetWidth(470)
+    hint:SetJustifyH("LEFT")
+    hint:SetText("Click a step to tick it. WP = waypoint, Trk = track from this step.")
+    hint:SetTextColor(0.8, 0.72, 0.55)
 
-    -- Minimap button (A6): hand-rolled, no libraries. Quest log
-    -- book icon to match the window styling. Left-click toggles the
+    -- Minimap button (A6): hand-rolled, no libraries. A book icon
+    -- to match the window styling - an item icon, because item
+    -- icons resolve by path on every client while the old
+    -- quest-log book icon path renders blank on the current one
+    -- (SEAN's screenshot, 2026-10-23). Left-click toggles the
     -- catalog, right-click toggles the tracker; drag it around the
     -- minimap ring - the angle is saved in db.settings.
     if Minimap then
@@ -672,9 +702,16 @@ function UI.Build()
             mb:SetFrameLevel(mfl + 5)
         end
         local icon = mb:CreateTexture(nil, "ARTWORK")
-        icon:SetSize(20, 20)
+        icon:SetSize(22, 22)
         icon:SetPoint("CENTER", 0, 1)
-        icon:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BookIcon")
+        for _, path in ipairs({
+            "Interface\\Icons\\INV_Misc_Book_09",
+            "Interface\\Icons\\INV_Misc_Book_07",
+            "Interface\\Icons\\INV_Misc_Book_04",
+        }) do
+            if icon:SetTexture(path) ~= false then break end
+        end
+        if icon.SetTexCoord then icon:SetTexCoord(0.08, 0.92, 0.08, 0.92) end
         local ring = mb:CreateTexture(nil, "OVERLAY")
         ring:SetSize(52, 52)
         ring:SetPoint("CENTER", 0, 0)
