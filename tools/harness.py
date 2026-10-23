@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SecretsGPS startup-simulation harness.
+"""SecretGPS startup-simulation harness.
 
 Loads the addon files listed in a .toc (Retail or Camelot) against a
 mocked WoW API using lupa, fires ADDON_LOADED -> PLAYER_LOGIN, then
@@ -19,7 +19,7 @@ import sys
 import lupa
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ADDON = ROOT / "SecretsGPS"
+ADDON = ROOT / "SecretGPS"
 
 PRELUDE = r"""
 CHATLOG = {}
@@ -100,7 +100,7 @@ local NS = {}
 for _, item in ipairs(FILES) do
     local fn, err = load(item.code, item.name)
     if not fn then note("LOADFAIL " .. item.name .. ": " .. tostring(err)); return table.concat(report, "\n") end
-    local ok, e = pcall(fn, "SecretsGPS", NS)
+    local ok, e = pcall(fn, "SecretGPS", NS)
     if not ok then note("RUNFAIL " .. item.name .. ": " .. tostring(e)); return table.concat(report, "\n") end
 end
 note("loaded " .. #FILES .. " files, entries=" .. #NS.Entries)
@@ -112,11 +112,11 @@ local function fire(ev, ...)
         end
     end
 end
-fire("ADDON_LOADED", "SecretsGPS")
+fire("ADDON_LOADED", "SecretGPS")
 fire("PLAYER_LOGIN")
 note("login fired")
 try("slash toggle open", function() SlashCmdList["SECRETSGPS"]("") end)
-try("frame shown", function() assert(SecretsGPSFrame and SecretsGPSFrame:IsShown(), "frame not shown") end)
+try("frame shown", function() assert(SecretGPSFrame and SecretGPSFrame:IsShown(), "frame not shown") end)
 try("debug slash", function() SlashCmdList["SECRETSGPS"]("debug") end)
 try("mindseeker slash", function() SlashCmdList["SECRETSGPS"]("mindseeker") end)
 try("select each entry + refresh", function()
@@ -196,7 +196,7 @@ try("tracker start, stop", function()
         if e.steps and #e.steps >= 2 then
             NS.Tracker.Start(e)
             assert(NS.db.tracked and NS.db.tracked.id == e.id, "tracked id mismatch")
-            assert(SecretsGPSTrackerFrame and SecretsGPSTrackerFrame:IsShown(), "tracker not shown")
+            assert(SecretGPSTrackerFrame and SecretGPSTrackerFrame:IsShown(), "tracker not shown")
             NS.Tracker.Stop()
             assert(NS.db.tracked == nil, "stop did not clear tracking")
             return
@@ -251,7 +251,7 @@ def toc_files(toc_name):
 
 
 def main():
-    toc = sys.argv[1] if len(sys.argv) > 1 else "SecretsGPS.toc"
+    toc = sys.argv[1] if len(sys.argv) > 1 else "SecretGPS.toc"
     files = toc_files(toc)
     rt = lupa.LuaRuntime(unpack_returned_tuples=True)
     rt.execute(PRELUDE)
