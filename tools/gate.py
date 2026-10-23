@@ -17,6 +17,99 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 ADDON = ROOT / "SecretGPS"
 TOCS = ["SecretGPS.toc", "SecretGPS_Camelot.toc"]
 
+VALIDATOR_LUA = r"""
+function(ns, expectedGame, types, expansions)
+  local bad = {}
+  local function add(s) bad[#bad + 1] = s end
+  for i = 1, #ns.Entries do
+    local e = ns.Entries[i]
+    local id = (type(e.id) == "string" and e.id) or ("<entry " .. i .. ">")
+    if type(e.id) ~= "string" or e.id == "" then add(id .. ": id missing") end
+    if type(e.name) ~= "string" or e.name == "" then add(id .. ": name missing") end
+    if not types[e.type] then add(id .. ": type '" .. tostring(e.type) .. "' has no UI label") end
+    if not expansions[e.expansion] then add(id .. ": expansion '" .. tostring(e.expansion) .. "' has no UI label") end
+    if e.game ~= expectedGame then add(id .. ": game '" .. tostring(e.game) .. "' != " .. expectedGame) end
+    if type(e.reward) ~= "string" then add(id .. ": reward missing") end
+    if type(e.source) ~= "string" or e.source:sub(1, 4) ~= "http" then add(id .. ": source missing or not http") end
+    if e.verifiedPatch == nil then add(id .. ": verifiedPatch missing") end
+    if e.mindSeeker ~= nil and type(e.mindSeeker) ~= "boolean" then add(id .. ": mindSeeker not boolean") end
+    if e.difficulty ~= nil and (type(e.difficulty) ~= "number" or e.difficulty < 1 or e.difficulty > 5) then add(id .. ": difficulty out of 1..5") end
+    if type(e.steps) ~= "table" or #e.steps == 0 then
+      add(id .. ": no steps")
+    else
+      for j = 1, #e.steps do
+        local s = e.steps[j]
+        if type(s.text) ~= "string" or s.text == "" then add(id .. " step " .. j .. ": text missing") end
+        if (s.x == nil) ~= (s.y == nil) then add(id .. " step " .. j .. ": x/y mismatch") end
+        if s.x ~= nil and (type(s.x) ~= "number" or s.x < 0 or s.x > 100
+            or type(s.y) ~= "number" or s.y < 0 or s.y > 100) then
+          add(id .. " step " .. j .. ": coords outside 0..100")
+        end
+        if s.mapID ~= nil and (s.x == nil or type(s.mapID) ~= "number") then add(id .. " step " .. j .. ": mapID without coords") end
+        if s.questFlag ~= nil and type(s.questFlag) ~= "number" then add(id .. " step " .. j .. ": questFlag not a number") end
+      end
+    end
+    if type(e.completion) == "table" and e.completion.questFlags ~= nil then
+      for k = 1, #e.completion.questFlags do
+        if type(e.completion.questFlags[k]) ~= "number" then add(id .. ": completion questFlag not a number") end
+      end
+    end
+    if e.collection ~= nil then
+      if type(e.collection) ~= "table" then
+        add(id .. ": collection not a table")
+      else
+        local k = e.collection.kind
+        if k ~= "mount" and k ~= "pet" and k ~= "toy" then add(id .. ": collection.kind '" .. tostring(k) .. "' invalid") end
+        if type(e.collection.id) ~= "number" or e.collection.id <= 0 then add(id .. ": collection.id not a positive number") end
+      end
+    end
+  end
+  return bad
+end
+"""
+
+RETAIL_DATA = ["Data_Retail.lua", "Data_Retail_LFH.lua", "Data_Expansions1.lua",
+               "Data_Expansions2.lua", "Data_Retail_Fixes.lua",
+               "Data_Retail_MindSeeker.lua"]
+FOREVER_DATA = ["Data_Forever.lua", "Data_Forever2.lua", "Data_Forever3.lua",
+                "Data_Forever_Books.lua"]
+
+
+def _label_keys(block_name, ui_text):
+    m = re.search(block_name + r"\s*=\s*\{(.*?)\n\}", ui_text, re.S)
+    if not m:
+        return set()
+    return set(re.findall(r"(\w+)\s*=", m.group(1)))
+
+
+def schema_failures():
+    try:
+        import lupa
+    except ImportError:
+        return ["lupa not available for schema validation"]
+    ui_text = (ADDON / "UI.lua").read_text()
+    types = _label_keys("TYPE_LABELS", ui_text)
+    expansions = _label_keys("EXPANSION_LABELS", ui_text)
+    if not types or not expansions:
+        return ["could not extract label tables from UI.lua"]
+    lua = lupa.LuaRuntime()
+    validate = lua.eval(VALIDATOR_LUA)
+    out = []
+    for files, game in ((RETAIL_DATA, "retail"), (FOREVER_DATA, "forever")):
+        ns = lua.table()
+        ns.Entries = lua.table()
+        for name in files:
+            chunk = lua.compile((ADDON / name).read_text())
+            chunk("SecretGPS", ns)
+        type_set = lua.table_from({t: True for t in types})
+        exp_set = lua.table_from({x: True for x in expansions})
+        bad = validate(ns, game, type_set, exp_set)
+        problems = [bad[i] for i in range(1, len(bad) + 1)]
+        print(f"schema ({game}): {len(ns.Entries)} entries, "
+              f"{len(problems)} problem(s)")
+        out += [f"schema {game}: {p}" for p in problems]
+    return out
+
 
 def main():
     failures = []
@@ -101,6 +194,26 @@ def main():
         failures.append(f"duplicate entry ids: {sorted(dupes)}")
     else:
         print(f"entry ids: {len(ids)} unique")
+    # Schema validation: load the data files (TOC order, per client)
+    # and validate every entry/step against the catalog schema. Type
+    # and expansion values must have labels in UI.lua, so an unlabeled
+    # value can never ship silently again.
+    failures += schema_failures()
+    # Version consistency: both TOCs, Core.lua and package.py must
+    # agree on the version string.
+    versions = {}
+    for toc in TOCS:
+        m = re.search(r"^## Version:\s*(\S+)", (ADDON / toc).read_text(), re.M)
+        versions[toc] = m.group(1) if m else None
+    m = re.search(r'ns\.VERSION = "([^"]+)"', (ADDON / "Core.lua").read_text())
+    versions["Core.lua"] = m.group(1) if m else None
+    m = re.search(r'^VERSION = "([^"]+)"',
+                  (ROOT / "tools" / "package.py").read_text(), re.M)
+    versions["package.py"] = m.group(1) if m else None
+    if len(set(versions.values())) == 1 and None not in versions.values():
+        print(f"version consistency: {versions['Core.lua']} in all 4 places")
+    else:
+        failures.append(f"version mismatch: {versions}")
     for toc in TOCS:
         proc = subprocess.run(
             [sys.executable, str(ROOT / "tools" / "harness.py"), toc],
