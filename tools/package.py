@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the two SecretsGPS release zips.
+"""Build the two SecretGPS release zips.
 
 File lists are derived from the TOCs themselves (the exact files each
 client loads, in load order) plus the TOC file, so a data file added
@@ -13,11 +13,11 @@ import sys
 import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ADDON = ROOT / "SecretsGPS"
-VERSION = "0.4.0"
+ADDON = ROOT / "SecretGPS"
+VERSION = "0.5.0"
 VARIANTS = {
-    "Retail": "SecretsGPS.toc",
-    "Forever": "SecretsGPS_Camelot.toc",
+    "Retail": "SecretGPS.toc",
+    "Forever": "SecretGPS_Camelot.toc",
 }
 
 
@@ -31,14 +31,14 @@ def main():
     failures = []
     for variant, toc_name in VARIANTS.items():
         files = toc_files(toc_name)
-        out = ROOT / f"SecretsGPS-{VERSION}-{variant}.zip"
+        out = ROOT / f"SecretGPS-{VERSION}-{variant}.zip"
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
             for name in files:
-                zf.write(ADDON / name, f"SecretsGPS/{name}")
+                zf.write(ADDON / name, f"SecretGPS/{name}")
         with zipfile.ZipFile(out) as zf:
             names = zf.namelist()
             bad = zf.testzip()
-        want = {f"SecretsGPS/{n}" for n in files}
+        want = {f"SecretGPS/{n}" for n in files}
         if set(names) != want or bad is not None:
             failures.append(f"{out.name}: contents {sorted(names)} != toc {sorted(want)} bad={bad}")
         print(f"{out.name}: {names}")
