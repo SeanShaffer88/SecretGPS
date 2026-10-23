@@ -208,4 +208,35 @@ change.
 | Gate (4-way version consistency 0.6.5) | PASS (exit 0) | Partially Verified |
 | Harness, both TOCs (incl. new "text scale cycles via slash" scenario) | PASS | Partially Verified |
 | Packaging: v0.6.5 Retail (60,252 B) + Forever (30,967 B) zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub publish: clean-tree per-file upsert (10 files updated, rest identical-skips) + full-tree blob-SHA audit | ALL MATCH | Verified |
+| GitHub pre-release v0.6.5 with both zips attached | Published, page read back (assets shown 58.8 / 30.2 KB) | Verified |
 | In-game — text sizes render/read as intended | NOT RUN | **Unverified** |
+
+## v0.6.6 — minimap ring/icon alignment (2026-10-23)
+
+SEAN, in game with no other addons enabled: "the minimap icon
+and the ring border that goes around it are not lined up" —
+with a minimap crop: the first full view of the button, at the
+minimap's lower-left rim. The gold ring sits up-left and the
+book icon hangs off its lower-right edge.
+
+Root cause: both textures were anchored at the button's
+CENTER, but the MiniMap-TrackingBorder texture's ring ARTWORK
+sits in the top-left of its canvas (the rest is drop shadow),
+so the visible ring renders ~11 units up-left of the point its
+texture is centered on — while the truly-centered icon sat on
+the button center. Confirmed against the standard
+minimap-button library layout (LibDBIcon: 53x53 overlay
+anchored TOPLEFT to the button, under which the artwork's
+center lands on the button center) and an independent
+cropping reference (a SetTexCoord isolating roughly the
+canvas's top-left half isolates the ring).
+
+Fix: the ring texture is now 53x53, anchored TOPLEFT to the
+button; the icon stays centered.
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (4-way version consistency 0.6.6) | PASS (exit 0) | Partially Verified |
+| Harness, both TOCs | PASS | Partially Verified |
+| In-game — ring and icon concentric | NOT RUN | **Unverified** |
