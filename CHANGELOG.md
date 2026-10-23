@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.6.3 — 2026-10-23
+
+Second look fix, from a live screenshot of 0.6.2 (which confirmed
+the dark frame, black list, gold titles and red buttons now land
+as intended):
+
+- **Detail title and meta were ghosted**: the panels' background
+  texture (UI-Tooltip-Background) is grey and translucent, so it
+  greyed the parchment and veiled the title/meta text drawn under
+  the panel into faint ghosts. Panels (and both window frames)
+  now use the opaque WHITE8x8 texture — the tint is the true
+  color — and the detail title/meta and the tracker's step/zone
+  texts are parented to their panels so they always draw on top.
+  The parchment is actually parchment-colored now.
+- **Minimap icon draw order**: the book icon now draws above the
+  minimap ring instead of beneath it (this client's tracking
+  border texture was hiding the icon under the ring), and the
+  button seats itself on the minimap's rim based on its actual
+  size instead of a fixed radius.
+- All 15 Retail pet entries now carry verified collection IDs
+  (species IDs read from each pet's Wowhead NPC page), so a pet
+  you already own counts as solved and shows a "Collected" line.
+- The detail title is back to the standard large game font (the
+  0.6.2 quest-title font experiment is reverted).
+
 ## 0.6.2 — 2026-10-23
 
 The look, fixed — driven by live in-game screenshots of 0.6.1:
