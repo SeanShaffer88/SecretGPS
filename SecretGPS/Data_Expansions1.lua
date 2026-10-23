@@ -8,6 +8,7 @@ local function Add(e) ns.Entries[#ns.Entries + 1] = e end
 
 Add({
   id = "time-lost-proto-drake", name = "Time-Lost Proto-Drake", type = "mount",
+  collection = { kind = "mount", id = 265 },
   expansion = "wotlk", game = "retail", zone = "The Storm Peaks",
   reward = "Reins of the Time-Lost Proto-Drake mount", mindSeeker = false,
   status = "Evergreen rare camp",
@@ -26,6 +27,7 @@ Add({
 
 Add({
   id = "aeonaxx", name = "Aeonaxx: Phosphorescent Stone Drake", type = "mount",
+  collection = { kind = "mount", id = 393 },
   expansion = "cata", game = "retail", zone = "Deepholm",
   reward = "Reins of the Phosphorescent Stone Drake mount", mindSeeker = false,
   status = "Evergreen rare camp",
@@ -46,6 +48,7 @@ Add({
 
 Add({
   id = "poseidus", name = "Poseidus: Reins of Poseidus", type = "mount",
+  collection = { kind = "mount", id = 420 },
   expansion = "cata", game = "retail", zone = "Vashj'ir",
   reward = "Reins of Poseidus mount (Bind on Equip)", mindSeeker = false,
   status = "Evergreen rare camp",
@@ -61,6 +64,7 @@ Add({
 
 Add({
   id = "grey-riding-camel", name = "Grey Riding Camel", type = "mount",
+  collection = { kind = "mount", id = 400 },
   expansion = "cata", game = "retail", zone = "Uldum",
   reward = "Reins of the Grey Riding Camel mount + 'the Camel-Hoarder' title", mindSeeker = false,
   status = "Evergreen rare camp",
@@ -77,6 +81,7 @@ Add({
 
 Add({
   id = "alani", name = "Alani: Thundering Ruby Cloud Serpent", type = "mount",
+  collection = { kind = "mount", id = 517 },
   expansion = "mop", game = "retail", zone = "Vale of Eternal Blossoms",
   reward = "Reins of the Thundering Ruby Cloud Serpent mount", mindSeeker = false,
   solo = "Solo", difficulty = 3, estTime = "Multi-day farm (typical)",
@@ -92,6 +97,7 @@ Add({
 
 Add({
   id = "voidtalon", name = "Voidtalon of the Dark Star", type = "mount",
+  collection = { kind = "mount", id = 682 },
   expansion = "wod", game = "retail", zone = "Draenor (all zones)",
   reward = "Voidtalon of the Dark Star mount", mindSeeker = false,
   status = "Evergreen rare camp",
@@ -237,6 +243,7 @@ Add({
 
 Add({
   id = "smoldering-ember-wyrm", name = "Smoldering Ember Wyrm (Nightbane)", type = "mount",
+  collection = { kind = "mount", id = 883 },
   expansion = "legion", game = "retail", zone = "Return to Karazhan",
   reward = "Smoldering Ember Wyrm mount", mindSeeker = false,
   solo = "Group (dungeon; soloable at max level)", difficulty = 3, estTime = "One dungeon run per attempt",
@@ -299,6 +306,7 @@ Add({
 
 Add({
   id = "nazjatar-blood-serpent", name = "Nazjatar Blood Serpent", type = "mount",
+  collection = { kind = "mount", id = 1057 },
   expansion = "bfa", game = "retail", zone = "Nazjatar / Abyssal depths",
   reward = "Nazjatar Blood Serpent mount", mindSeeker = true,
   solo = "Solo / group farm", difficulty = 4, estTime = "Fragment farm",
@@ -329,6 +337,7 @@ Add({
 
 Add({
   id = "child-of-torcali", name = "Child of Torcali", type = "mount",
+  collection = { kind = "mount", id = 1249 },
   expansion = "bfa", game = "retail", zone = "Zuldazar",
   reward = "Child of Torcali direhorn mount (adult)", mindSeeker = false,
   solo = "Solo", difficulty = 3, estTime = "Weeks (daily stages)",
