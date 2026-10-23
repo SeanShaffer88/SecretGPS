@@ -236,6 +236,12 @@ try("wp + track slash commands", function()
     SlashCmdList["SECRETSGPS"]("untrack")
     assert(NS.db.tracked == nil, "untrack slash left tracking active")
 end)
+try("text scale cycles via slash", function()
+    local before = NS.db.settings.textScale
+    SlashCmdList["SECRETSGPS"]("text")
+    assert(NS.db.settings.textScale ~= before, "text scale did not change")
+    SlashCmdList["SECRETSGPS"]("text")
+end)
 try("type filter narrows list", function()
     local function visibleIds()
         local ids = {}
