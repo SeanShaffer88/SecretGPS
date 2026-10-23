@@ -1,11 +1,11 @@
-# SecretsGPS
+# SecretGPS
 
 **Every hidden secret in WoW, in one catalog — pick one, follow the
 steps, get the thing.**
 
 World of Warcraft is full of collectibles the game never tells you
 about: puzzle mounts, secret pets, hidden toys, class-locked
-treasures, and mysteries the community is still solving. SecretsGPS
+treasures, and mysteries the community is still solving. SecretGPS
 collects them into one categorized window, walks you to each one
 with a short step-by-step guide and map waypoints, and remembers
 what you've already done.
@@ -42,7 +42,7 @@ One addon, two games: **WoW Retail** (patch 12.1.5) and
 
 ## How to use it
 
-1. Type `/sgps` (or `/secretsgps`) to open the catalog.
+1. Type `/sgps` (or `/secretgps`) to open the catalog.
 2. Pick a secret on the left; its guide appears on the right.
 3. Hit **Track this secret** and follow the SecretTracker window:
    waypoint set, step by step, until it's yours.
@@ -58,16 +58,16 @@ Every entry credits the community guide it was transcribed from —
 chiefly Warcraft Secrets and Lost WOW (the Secret Finding
 community's guides), Wowhead, Icy Veins, Method and the Game
 Detectives wiki. Coordinates appear only where a source publishes
-them; SecretsGPS never guesses a location, and entries whose
+them; SecretGPS never guesses a location, and entries whose
 steps couldn't be fully sourced say so in their own text.
 
 Forever entries come from the Forever beta and will be re-verified
-on the live client after its November 4, 2026 launch. SecretsGPS
+on the live client after its November 4, 2026 launch. SecretGPS
 is renamed from the original SecretAtlas builds; the catalog data
-is complete for v0.4.0, and in-game walkthrough verification is in
+is complete for v0.5.0, and in-game walkthrough verification is in
 progress.
 
 ## License
 
-MIT. Created by Sean Shaffer. SecretsGPS only displays
+MIT. Created by Sean Shaffer. SecretGPS only displays
 information and sets waypoints — it does not automate gameplay.
