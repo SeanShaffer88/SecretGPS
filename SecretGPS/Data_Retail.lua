@@ -68,6 +68,7 @@ Add({
 
 Add({
   id = "sun-darter-hatchling", name = "Sun Darter Hatchling", type = "pet",
+  collection = { kind = "pet", id = 382 },
   expansion = "legion", game = "retail", zone = "Winterspring (Caverns of Consumption)",
   reward = "Sun Darter Hatchling pet", mindSeeker = true,
   solo = "Solo", difficulty = 4, estTime = "30-60m in cave (plus item prep)",
@@ -113,6 +114,7 @@ Add({
 
 Add({
   id = "baal", name = "Baa'l", type = "pet",
+  collection = { kind = "pet", id = 2352 },
   expansion = "bfa", game = "retail", zone = "Kul Tiras / Zandalar > Frostfire Ridge",
   reward = "Baa'l pet", mindSeeker = true,
   solo = "Solo", difficulty = 4, estTime = "~2-3h",
@@ -155,6 +157,7 @@ Add({
 
 Add({
   id = "jenafur", name = "Jenafur", type = "pet",
+  collection = { kind = "pet", id = 2795 },
   expansion = "bfa", game = "retail", zone = "Ashenvale > Elwynn Forest > Return to Karazhan",
   reward = "Jenafur pet", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "~30m once known",
