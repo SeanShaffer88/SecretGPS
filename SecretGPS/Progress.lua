@@ -23,32 +23,46 @@ ns.IsQuestDone = IsQuestDone
 -- A7 phase 1: journal-based collected detection. An entry may carry
 -- collection = { kind = "mount"|"pet"|"toy", id = n }; when the
 -- player's journal already holds it, the secret counts as solved,
--- the same way a completed quest flag does. Every API is probed and
--- pcall-wrapped: a missing or changed API reads as "not collected",
--- never as an error. (IDs are sourced per entry in the phase 2 data
--- pass; the field is schema-validated by the gate.)
-local function IsCollected(entry)
-    local c = entry and entry.collection
-    if type(c) ~= "table" or type(c.id) ~= "number" then return false end
-    if c.kind == "pet" then
+-- the same way a completed quest flag does. Set entries (the
+-- Trader's Ottuks) use ids = { ... } instead and count as
+-- collected only when ALL of them are owned. Every API is probed
+-- and pcall-wrapped: a missing or changed API reads as "not
+-- collected", never as an error. (IDs are sourced per entry in the
+-- phase 2 data pass; the field is schema-validated by the gate.)
+local function CollectedOne(kind, id)
+    if type(id) ~= "number" then return false end
+    if kind == "pet" then
         if C_PetJournal and C_PetJournal.GetNumCollectedInfo then
-            local ok, n = pcall(C_PetJournal.GetNumCollectedInfo, c.id)
+            local ok, n = pcall(C_PetJournal.GetNumCollectedInfo, id)
             if ok and type(n) == "number" then return n > 0 end
         end
-    elseif c.kind == "mount" then
+    elseif kind == "mount" then
         if C_MountJournal and C_MountJournal.GetMountInfoByID then
             local ok, res = pcall(function()
                 local _, _, _, _, _, _, _, _, _, _, collected =
-                    C_MountJournal.GetMountInfoByID(c.id)
+                    C_MountJournal.GetMountInfoByID(id)
                 return collected
             end)
             if ok then return res and true or false end
         end
-    elseif c.kind == "toy" then
+    elseif kind == "toy" then
         if PlayerHasToy then
-            local ok, res = pcall(PlayerHasToy, c.id)
+            local ok, res = pcall(PlayerHasToy, id)
             if ok then return res and true or false end
         end
+    end
+    return false
+end
+
+local function IsCollected(entry)
+    local c = entry and entry.collection
+    if type(c) ~= "table" then return false end
+    if type(c.id) == "number" then return CollectedOne(c.kind, c.id) end
+    if type(c.ids) == "table" and #c.ids > 0 then
+        for i = 1, #c.ids do
+            if not CollectedOne(c.kind, c.ids[i]) then return false end
+        end
+        return true
     end
     return false
 end
