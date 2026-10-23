@@ -59,6 +59,7 @@ Add({
 
 Add({
   id = "courage", name = "Courage", type = "pet",
+  collection = { kind = "pet", id = 3065 },
   expansion = "shadowlands", game = "retail", zone = "Bastion",
   reward = "Courage pet (secret Larion cub)", mindSeeker = true,
   solo = "Group recommended: 5 players (3 can work with tight coordination)", difficulty = 3, estTime = "~15 min with a group",
@@ -83,6 +84,7 @@ Add({
 
 Add({
   id = "glimr", name = "Glimr", type = "pet",
+  collection = { kind = "pet", id = 2888 },
   expansion = "shadowlands", game = "retail", zone = "Grizzly Hills",
   reward = "Glimr pet", mindSeeker = true,
   solo = "Solo", difficulty = 2, estTime = "~45 min",
@@ -246,6 +248,7 @@ Add({
 
 Add({
   id = "phoenix-wishwing", name = "Phoenix Wishwing", type = "pet",
+  collection = { kind = "pet", id = 3292 },
   expansion = "dragonflight", game = "retail", zone = "Waking Shores",
   reward = "Phoenix Wishwing pet", mindSeeker = true,
   solo = "Solo", difficulty = 2, estTime = "See guide",
@@ -260,6 +263,7 @@ Add({
 
 Add({
   id = "nelthara", name = "Nelthara", type = "pet",
+  collection = { kind = "pet", id = 3553 },
   expansion = "dragonflight", game = "retail", zone = "Valdrakken / High Creche",
   reward = "Nelthara pet",
   solo = "Solo", difficulty = 2, estTime = "Short quest chain",
@@ -467,6 +471,7 @@ Add({
 
 Add({
   id = "gortham", name = "Gortham", type = "pet",
+  collection = { kind = "pet", id = 4967 },
   expansion = "midnight", game = "retail", zone = "Nexus-Point Xenas (dungeon)",
   reward = "Gortham pet (capybara)", mindSeeker = true,
   solo = "Group: full party of 5 (one player per conduit)", difficulty = 3, estTime = "~20 min",
@@ -483,6 +488,7 @@ Add({
 
 Add({
   id = "jimothy", name = "J'imothy", type = "pet",
+  collection = { kind = "pet", id = 5164 },
   expansion = "midnight", game = "retail", zone = "Silvermoon City",
   reward = "J'imothy pet (raccoon)",
   solo = "Solo", difficulty = 2, estTime = "~10 min",
@@ -499,6 +505,7 @@ Add({
 
 Add({
   id = "slitherfang", name = "Slitherfang", type = "pet",
+  collection = { kind = "pet", id = 5129 },
   expansion = "midnight", game = "retail", zone = "Altar of Fangs (dungeon)",
   reward = "Slitherfang pet (snake) + 'In Case Of Emergency' achievement",
   solo = "Group: 5", difficulty = 3, estTime = "One dungeon run with a full group",
@@ -514,6 +521,7 @@ Add({
 
 Add({
   id = "unfazed-diver", name = "Unfazed Diver", type = "pet",
+  collection = { kind = "pet", id = 4860 },
   expansion = "midnight", game = "retail", zone = "Tazavesh > K'aresh / Voidstorm / Naigtal",
   reward = "Unfazed Diver pet (purrkin)",
   solo = "Solo", difficulty = 4, estTime = "Trail across three areas (the hunt itself took the community about 10 months)",
