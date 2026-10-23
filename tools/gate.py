@@ -60,7 +60,15 @@ function(ns, expectedGame, types, expansions)
       else
         local k = e.collection.kind
         if k ~= "mount" and k ~= "pet" and k ~= "toy" then add(id .. ": collection.kind '" .. tostring(k) .. "' invalid") end
-        if type(e.collection.id) ~= "number" or e.collection.id <= 0 then add(id .. ": collection.id not a positive number") end
+        local hasId = type(e.collection.id) == "number" and e.collection.id > 0
+        local hasIds = false
+        if type(e.collection.ids) == "table" and #e.collection.ids >= 1 then
+          hasIds = true
+          for k2 = 1, #e.collection.ids do
+            if type(e.collection.ids[k2]) ~= "number" or e.collection.ids[k2] <= 0 then hasIds = false end
+          end
+        end
+        if not hasId and not hasIds then add(id .. ": collection needs a positive id or ids list") end
       end
     end
   end
