@@ -18,7 +18,7 @@ One addon, two games: **WoW Retail** (patch 12.1.5) and
 - **Shows you the whole board.** 114 secrets (92 Retail, 22
   Forever) in one window, organized by what you get: mounts, pets,
   toys, transmog, titles, questlines and more. Search by name,
-  zone or reward; filter by type; hide what you've solved.
+  zone, reward or step text; filter by type; hide what you've solved.
 - **Walks you through each one.** Every secret has a short,
   ordered guide with the prerequisites, difficulty, time gates and
   RNG warnings up front — no alt-tabbing through five-year-old
@@ -39,6 +39,10 @@ One addon, two games: **WoW Retail** (patch 12.1.5) and
 - **Tracks the mysteries too.** Unsolved and partly solved secrets
   (like Forever's Stone Key) are in the catalog, labeled honestly
   with exactly what is and isn't known.
+- **Looks the part.** Both windows wear the classic quest log
+  look — parchment pages, ink-brown text — and a quest-log book
+  button sits on your minimap: left-click for the catalog,
+  right-click for the tracker, drag to move it.
 
 ## How to use it
 
@@ -63,9 +67,10 @@ steps couldn't be fully sourced say so in their own text.
 
 Forever entries come from the Forever beta and will be re-verified
 on the live client after its November 4, 2026 launch. SecretGPS
-is renamed from the original SecretAtlas builds; the catalog data
-is complete for v0.5.0, and in-game walkthrough verification is in
-progress.
+is renamed from the original SecretAtlas builds. As of v0.6.1 the
+addon has been run in the live Retail client (loading and catalog
+rendering verified); full in-game walkthroughs of every entry are
+in progress.
 
 ## License
 
