@@ -78,6 +78,7 @@ local function newFrame(kind, name, parent, template)
 end
 CreateFrame = newFrame
 UIParent = newFrame("Frame", "UIParent")
+Minimap = newFrame("Frame", "Minimap")
 DEFAULT_CHAT_FRAME = { AddMessage = function(_, msg) CHATLOG[#CHATLOG + 1] = tostring(msg) end }
 SlashCmdList = {}
 GetBuildInfo = function() return "12.1.5", "99999", "Oct 2026", 120105 end
@@ -235,8 +236,98 @@ try("wp + track slash commands", function()
     SlashCmdList["SECRETSGPS"]("untrack")
     assert(NS.db.tracked == nil, "untrack slash left tracking active")
 end)
+try("type filter narrows list", function()
+    local function visibleIds()
+        local ids = {}
+        for i = 1, #NS.UI.listRows do
+            local r = NS.UI.listRows[i]
+            if r and r:IsShown() and r.entryId then ids[#ids + 1] = r.entryId end
+        end
+        return ids
+    end
+    local t0 = NS.Entries[1].type
+    NS.db.typeFilter = t0
+    NS.UI.Refresh()
+    local vis = visibleIds()
+    assert(#vis > 0, "type filter showed no rows")
+    for i = 1, #vis do
+        assert(NS.ById[vis[i]].type == t0, "row " .. vis[i] .. " is not type " .. t0)
+    end
+    NS.db.typeFilter = "all"
+    NS.UI.Refresh()
+    assert(visibleIds()[1] == NS.Entries[1].id, "clearing type filter did not restore")
+end)
+try("search matches step text", function()
+    local function visibleIds()
+        local ids = {}
+        for i = 1, #NS.UI.listRows do
+            local r = NS.UI.listRows[i]
+            if r and r:IsShown() and r.entryId then ids[#ids + 1] = r.entryId end
+        end
+        return ids
+    end
+    local e1 = NS.Entries[1]
+    local hay = (tostring(e1.name or "") .. " " .. tostring(e1.zone or "") .. " " ..
+        tostring(e1.reward or "") .. " " .. tostring(e1.type or "")):lower()
+    local word = nil
+    for j = 1, #(e1.steps or {}) do
+        local txt = (tostring(e1.steps[j].text or "") .. " " ..
+            tostring(e1.steps[j].zone or "")):lower()
+        for w in txt:gmatch("[%a][%a]+") do
+            if #w >= 6 and not hay:find(w, 1, true) then word = w break end
+        end
+        if word then break end
+    end
+    assert(word, "no step-only word found for first entry")
+    local box = NS.UI.searchBox
+    box:SetText(word)
+    box._scripts.OnTextChanged(box)
+    local vis = visibleIds()
+    local found = false
+    for i = 1, #vis do if vis[i] == e1.id then found = true end end
+    assert(found, "step-word search '" .. word .. "' did not surface " .. e1.id)
+    box:SetText("")
+    box._scripts.OnTextChanged(box)
+    assert(visibleIds()[1] == e1.id, "clearing search did not restore")
+end)
+try("hide solved + restore", function()
+    local function visibleIds()
+        local ids = {}
+        for i = 1, #NS.UI.listRows do
+            local r = NS.UI.listRows[i]
+            if r and r:IsShown() and r.entryId then ids[#ids + 1] = r.entryId end
+        end
+        return ids
+    end
+    local e1 = NS.Entries[1]
+    NS.ToggleEntryComplete(e1)
+    assert(NS.IsEntrySolved(e1), "manual complete did not solve entry")
+    NS.db.hideCompleted = true
+    NS.UI.Refresh()
+    for i = 1, #visibleIds() do
+        assert(visibleIds()[i] ~= e1.id, "solved entry still visible with hide on")
+    end
+    NS.db.hideCompleted = false
+    NS.ToggleEntryComplete(e1)
+    NS.UI.Refresh()
+    assert(visibleIds()[1] == e1.id, "restore did not bring first entry back")
+end)
 try("quest-log update refresh", function() fire("QUEST_LOG_UPDATE") end)
 try("slash toggle close", function() SlashCmdList["SECRETSGPS"]("") end)
+try("minimap button exists + toggles catalog", function()
+    local mb = _G["SecretGPSMinimapButton"]
+    assert(mb, "minimap button was not created")
+    assert(mb._scripts and mb._scripts.OnClick, "minimap button has no OnClick")
+    assert(mb._scripts.OnDragStart and mb._scripts.OnDragStop,
+        "minimap button drag scripts missing")
+    local before = SecretGPSFrame:IsShown()
+    mb._scripts.OnClick(mb, "LeftButton")
+    assert(SecretGPSFrame:IsShown() == (not before),
+        "minimap left-click did not toggle the catalog")
+    mb._scripts.OnClick(mb, "LeftButton")
+    assert(SecretGPSFrame:IsShown() == before,
+        "second minimap left-click did not toggle back")
+end)
 local msSolved, msTotal = NS.MindSeekerCounts()
 note("mindseeker counts: " .. msSolved .. "/" .. msTotal)
 note("chat lines: " .. #CHATLOG)
