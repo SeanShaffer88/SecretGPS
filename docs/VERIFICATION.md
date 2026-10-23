@@ -239,4 +239,7 @@ button; the icon stays centered.
 |---|---|---|
 | Gate (4-way version consistency 0.6.6) | PASS (exit 0) | Partially Verified |
 | Harness, both TOCs | PASS | Partially Verified |
+| Packaging: v0.6.6 Retail (60,473 B) + Forever (31,187 B) zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub publish: clean-tree per-file upsert (8 files updated, rest identical-skips) + full-tree blob-SHA audit | ALL MATCH as a union of two runs (run 1's reads failed on tools/harness.py and tools/package.py — API flakiness, remote=None; run 2 confirmed both MATCH) | Verified |
+| GitHub pre-release v0.6.6 with both zips attached | Published, page read back (assets shown 59.1 / 30.5 KB) | Verified |
 | In-game — ring and icon concentric | NOT RUN | **Unverified** |
