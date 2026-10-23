@@ -13,7 +13,7 @@ Verified** (out-of-game gate passed) · **Unverified** (not yet run).
 | Gate: Lua parse (15 files), TOC cross-check (Retail TOC only gains the new data file), per-file counts (Retail 21+29+37+0+5 = 92, Forever 22), 114 unique entry IDs, LFH 110, Library Books 37 | PASS | Partially Verified |
 | mapID audit extended to the newly guide-published IDs (10, 17, 22, 23, 64, 77, 107, 109, 114, 115, 116, 210, 376, 539, 554, 630, 650, 680, 862, 895, 1533, 2024, 2112) | PASS | Partially Verified |
 | Harness, both TOCs: every entry selects/refreshes, tracker + waypoint paths exercised | PASS | Partially Verified |
-| In-game run — Retail | SEAN cannot test yet | **Unverified** |
+| In-game run — Retail: SEAN ran v0.6.0 in the real client 2026-10-23 (screenshot): addon loads, catalog list + Lucid Nightmare detail + steps render, header reads "Mind-Seeker: 0 solved of 33". Tracker window, waypoint clicks, ticking and /reload persistence not yet exercised on camera | PASS (load + render) | Partially Verified |
 | In-game run — Forever | Client launches Nov 4, 2026 | **Unverified** |
 
 ## v0.4.0 — 2026-10-23 (renamed to SecretGPS)
