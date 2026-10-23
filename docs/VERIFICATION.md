@@ -3,6 +3,19 @@
 Labels: **Verified** (observed in the real client) · **Partially
 Verified** (out-of-game gate passed) · **Unverified** (not yet run).
 
+## v0.6.0 — 2026-10-23 (Mind-Seeker completion, data only)
+
+| Check | Result | Label |
+|---|---|---|
+| New data file `Data_Retail_MindSeeker.lua`: 5 entries (Tobias, Mimiron's Jumpjets, Fashion of the Fanatic Felcyclist, Leaders of Scholomance, Wan'be's Buried Goods) transcribed from the Warcraft Secrets guides opened in-session (Mind-Seeker, Secrets of Azeroth, Memory of Scholomance, Wan'be's Buried Goods, Incognitro) | PASS | Partially Verified |
+| Mind-Seeker coverage: harness reads 0/33 — all 33 Seat of Knowledge secret records now carry the flag (the 34th displayed object is the trophy itself); Secrets of Azeroth un-flagged to end the double count | PASS | Partially Verified |
+| Summary upgrades: Courage (9 cub waypoints, mapID 1533), Glimr (9-quest chain, 116/114), Enlightened Hearthstone (6 pillar coords, no mapID — the guide publishes none), Gortham (5-conduit mechanic), J'imothy (3 prison locations + channel mechanic, Blizzard Watch) | PASS | Partially Verified |
+| Gate: Lua parse (15 files), TOC cross-check (Retail TOC only gains the new data file), per-file counts (Retail 21+29+37+0+5 = 92, Forever 22), 114 unique entry IDs, LFH 110, Library Books 37 | PASS | Partially Verified |
+| mapID audit extended to the newly guide-published IDs (10, 17, 22, 23, 64, 77, 107, 109, 114, 115, 116, 210, 376, 539, 554, 630, 650, 680, 862, 895, 1533, 2024, 2112) | PASS | Partially Verified |
+| Harness, both TOCs: every entry selects/refreshes, tracker + waypoint paths exercised | PASS | Partially Verified |
+| In-game run — Retail | SEAN cannot test yet | **Unverified** |
+| In-game run — Forever | Client launches Nov 4, 2026 | **Unverified** |
+
 ## v0.4.0 — 2026-10-23 (renamed to SecretGPS)
 
 | Check | Result | Label |
