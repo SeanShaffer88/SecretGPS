@@ -15,7 +15,7 @@ One addon, two games: **WoW Retail** (patch 12.1.5) and
 
 ## What it does
 
-- **Shows you the whole board.** 109 secrets (87 Retail, 22
+- **Shows you the whole board.** 114 secrets (92 Retail, 22
   Forever) in one window, organized by what you get: mounts, pets,
   toys, transmog, titles, questlines and more. Search by name,
   zone or reward; filter by type; hide what you've solved.
