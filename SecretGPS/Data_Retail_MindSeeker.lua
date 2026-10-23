@@ -109,7 +109,7 @@ Add({
 
 Add({
   id = "wanbes-buried-goods", name = "Wan'be's Buried Goods", type = "questline",
-  expansion = "battleforazeroth", game = "retail", zone = "Vol'dun > Azeroth-wide > Zuldazar",
+  expansion = "bfa", game = "retail", zone = "Vol'dun > Azeroth-wide > Zuldazar",
   reward = "Wan'be's Buried Goods (120 gold) - the hunt itself is the Mind-Seeker record", mindSeeker = true,
   solo = "Solo (Horde only)", difficulty = 2, estTime = "~45 min",
   timeGate = nil, rng = nil, prereq = "Horde character - this treasure hunt is Horde-only",
