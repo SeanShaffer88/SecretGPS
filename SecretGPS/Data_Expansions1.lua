@@ -123,6 +123,7 @@ Add({
 
 Add({
   id = "pepe", name = "Pepe & Costumes", type = "toy",
+  collection = { kind = "toy", id = 122293 },
   expansion = "wod", game = "retail", zone = "Garrison / Draenor + later zones",
   reward = "Trans-Dimensional Bird Whistle toy (Pepe) + costume collection", mindSeeker = false,
   solo = "Solo", difficulty = 2, estTime = "Varies per costume",
@@ -267,6 +268,7 @@ Add({
 
 Add({
   id = "endgineer-omegaplugg", name = "Endgineer Omegaplugg: Vial of Green Goo", type = "toy",
+  collection = { kind = "toy", id = 141331 },
   expansion = "legion", game = "retail", zone = "Gnomeregan",
   reward = "Vial of Green Goo toy (from the hidden boss Endgineer Omegaplugg)", mindSeeker = false,
   solo = "Group (party recommended per the source hub)", difficulty = 3, estTime = "One dungeon run",
@@ -397,6 +399,7 @@ Add({
 
 Add({
   id = "secret-fish", name = "Secret Fish & Hyper-Compressed Ocean", type = "toy",
+  collection = { kind = "toy", id = 168016 },
   expansion = "bfa", game = "retail", zone = "Mechagon > Azeroth-wide",
   reward = "Hyper-Compressed Ocean toy", mindSeeker = false,
   solo = "Solo", difficulty = 3, estTime = "Fishing across Azeroth",
@@ -462,6 +465,7 @@ Add({
 
 Add({
   id = "gem-of-acquiescence", name = "Gem of Acquiescence", type = "toy",
+  collection = { kind = "toy", id = 161342 },
   expansion = "bfa", game = "retail", zone = "Boralus (Stormsong Monastery cave)",
   reward = "Gem of Acquiescence toy (invisible in the Toy Box until learned)", mindSeeker = false,
   solo = "Solo", difficulty = 1, estTime = "Minutes once found",
