@@ -169,3 +169,23 @@ ring to BACKGROUND, radius derived from the minimap's width.
 | GitHub pre-release v0.6.3 with both zips attached | Published, page read back | Verified |
 | Note: main advanced one data commit past the release during the VERIFICATION publish (phase-2b toy IDs, commit 2397ac5); the v0.6.3 zips predate it — toy collection detection ships in the next release | — | Verified |
 | In-game — v0.6.3 (opaque parchment + dark title/meta, minimap book inside ring, tracker panel texts) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
+
+## v0.6.4 — collection detection completed (2026-10-23)
+
+A7 phase 2b/2c data: 6 toy item IDs (each confirmed on its
+Wowhead item page) and 39 mount journal IDs (WarcraftMounts
+"Blizzard ID", pattern proven on Lucid Nightmare 961 vs its
+item 151623, cross-checked Invincible 363 / Ultramarine 404,
+patch-banding across 30+; gold-sink mount name + ID 3137
+double-confirmed on the rendered page). Engine gained
+collection.ids (ALL-owned) for the Trader's Ottuks set; gate
+schema accepts id or ids. Mount IDs rest on one specialist
+source — an in-game spot-check (owning Lucid Nightmare should
+auto-mark the entry) upgrades them to Verified.
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (4-way version consistency 0.6.4, collection schema incl. ids) | PASS (exit 0) | Partially Verified |
+| Harness, both TOCs (collection probes live for pets/toys/mounts) | PASS | Partially Verified |
+| Packaging: v0.6.4 Retail (59,645 B) + Forever (30,360 B) zips, contents == TOC lists | PASS | Partially Verified |
+| In-game — collection detection (owned pet/toy/mount auto-solves) | NOT RUN | **Unverified** |
