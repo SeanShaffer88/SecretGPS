@@ -1,17 +1,17 @@
-# SecretsGPS — Design & Architecture
+# SecretGPS — Design & Architecture
 
 ## Product shape
 
-One codebase, two clients. The Retail TOC (`SecretsGPS.toc`, interface
+One codebase, two clients. The Retail TOC (`SecretGPS.toc`, interface
 120105) loads `Data_Retail.lua`; the Forever TOC
-(`SecretsGPS_Camelot.toc`, interface 16001) loads `Data_Forever.lua`.
+(`SecretGPS_Camelot.toc`, interface 16001) loads `Data_Forever.lua`.
 All other files are shared. Game-specific data is separated by TOC load
 list, not by runtime project-ID branching.
 
 ## Files
 
 - `Core.lua` — namespace, SavedVariables defaults, slash commands
-  (`/sa`, `/secretsgps`), login/event wiring, `/sa debug` diagnostics.
+  (`/sa`, `/secretgps`), login/event wiring, `/sa debug` diagnostics.
 - `Progress.lua` — quest-flag checks (`C_QuestLog.IsQuestFlaggedCompleted`,
   capability-probed with a guarded legacy fallback), manual step ticks,
   entry-solved logic, Mind-Seeker counts.
