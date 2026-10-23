@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SecretsGPS gate: Lua parse + TOC cross-check + harness (both TOCs).
+"""SecretGPS gate: Lua parse + TOC cross-check + harness (both TOCs).
 
 Run: python3 tools/gate.py
 Exit 0 only when every check passes. This gate proves the files parse
@@ -14,8 +14,8 @@ import sys
 from luaparser import ast
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ADDON = ROOT / "SecretsGPS"
-TOCS = ["SecretsGPS.toc", "SecretsGPS_Camelot.toc"]
+ADDON = ROOT / "SecretGPS"
+TOCS = ["SecretGPS.toc", "SecretGPS_Camelot.toc"]
 
 
 def main():
