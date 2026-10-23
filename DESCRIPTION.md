@@ -40,9 +40,10 @@ One addon, two games: **WoW Retail** (patch 12.1.5) and
   (like Forever's Stone Key) are in the catalog, labeled honestly
   with exactly what is and isn't known.
 - **Looks the part.** Both windows wear the classic quest log
-  look — parchment pages, ink-brown text — and a quest-log book
-  button sits on your minimap: left-click for the catalog,
-  right-click for the tracker, drag to move it.
+  look — a dark frame, a black list with gold titles, parchment
+  guide pages with ink-brown text — and a book button sits on
+  your minimap: left-click for the catalog, right-click for the
+  tracker, drag to move it.
 
 ## How to use it
 
