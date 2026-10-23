@@ -47,6 +47,8 @@ local function Build()
     if ns.StyleQuestLog then ns.StyleQuestLog(f) end
     frame = f
     ns.Tracker.frame = f
+    local ts = ns.db and ns.db.settings and ns.db.settings.textScale
+    if type(ts) == "number" and f.SetScale then f:SetScale(ts) end
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", 14, -12)
@@ -228,6 +230,12 @@ function Tracker.Stop()
     if frame then frame:Hide() end
     ns.Print("Tracking stopped.")
     if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
+end
+
+function Tracker.SetScale(s)
+    if frame and frame.SetScale and type(s) == "number" then
+        frame:SetScale(s)
+    end
 end
 
 function Tracker.Toggle()
