@@ -82,7 +82,7 @@ short version see `README.md`; for store-listing copy see
   all 33 secret records are cataloged in v0.6.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
-## Interface (v0.6.5)
+## Interface (v0.6.6)
 
 - **Classic quest log styling**: dark frames, a black list panel
   with gold titles, and parchment reading panels with ink-brown
