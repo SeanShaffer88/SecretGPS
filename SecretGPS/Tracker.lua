@@ -11,7 +11,8 @@ local _, ns = ...
 local Tracker = {}
 ns.Tracker = Tracker
 
-local frame, nameFS, countFS, stepFS, zoneFS, doneBtn
+local frame, nameFS, countFS, stepFS, zoneFS, doneBtn, barFill
+local soundPlayedFor -- entry id the completion sound already played for
 
 local function Current()
     local t = ns.db and ns.db.tracked
@@ -41,19 +42,14 @@ local function Build()
     f:RegisterForDrag("LeftButton")
     f:SetScript("OnDragStart", function(self) self:StartMoving() end)
     f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-    f:SetBackdrop({
-        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-        tile = true, tileSize = 32, edgeSize = 24,
-        insets = { left = 6, right = 6, top = 6, bottom = 6 },
-    })
-    f:SetBackdropColor(0.05, 0.02, 0.02, 0.95)
+    -- Same classic quest log look as the catalog (smaller tiles).
+    if ns.StyleQuestLog then ns.StyleQuestLog(f, 128, 98) end
     frame = f
     ns.Tracker.frame = f
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", 14, -12)
-    title:SetText("|cffe5484dSecret Tracker|r")
+    title:SetText("|cff9c2b12Secret Tracker|r")
     local close = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     close:SetSize(20, 20)
     close:SetPoint("TOPRIGHT", -10, -10)
@@ -65,24 +61,38 @@ local function Build()
     nameFS:SetWidth(302)
     nameFS:SetJustifyH("LEFT")
     nameFS:SetWordWrap(true)
+    nameFS:SetTextColor(0.35, 0.08, 0.03)
 
     countFS = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     countFS:SetPoint("TOPLEFT", 14, -58)
     countFS:SetWidth(302)
     countFS:SetJustifyH("LEFT")
+    countFS:SetTextColor(0.32, 0.24, 0.14)
+
+    -- Progress bar (A8): parchment track, brick-red fill.
+    local barBg = f:CreateTexture(nil, "ARTWORK")
+    barBg:SetPoint("TOPLEFT", 14, -72)
+    barBg:SetSize(302, 6)
+    barBg:SetColorTexture(0.30, 0.20, 0.08, 0.35)
+    barFill = f:CreateTexture(nil, "OVERLAY")
+    barFill:SetPoint("TOPLEFT", 14, -72)
+    barFill:SetSize(1, 6)
+    barFill:SetColorTexture(0.61, 0.17, 0.07, 0.9)
 
     stepFS = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    stepFS:SetPoint("TOPLEFT", 14, -78)
+    stepFS:SetPoint("TOPLEFT", 14, -84)
     stepFS:SetWidth(302)
-    stepFS:SetHeight(62)
+    stepFS:SetHeight(56)
     stepFS:SetJustifyH("LEFT")
     stepFS:SetJustifyV("TOP")
     stepFS:SetWordWrap(true)
+    stepFS:SetTextColor(0.16, 0.11, 0.05)
 
     zoneFS = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     zoneFS:SetPoint("TOPLEFT", 14, -142)
     zoneFS:SetWidth(302)
     zoneFS:SetJustifyH("LEFT")
+    zoneFS:SetTextColor(0.32, 0.24, 0.14)
 
     local prev = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     prev:SetSize(64, 22)
@@ -114,6 +124,27 @@ local function Build()
     f:Hide()
 end
 
+-- A8: completion sound, guarded - resolves the client's quest
+-- completed soundkit at call time and stays silent where a client
+-- does not expose it. Plays at most once per entry per session,
+-- and only while the tracker is visible.
+local function PlayCompleteSound()
+    if not (PlaySound and SOUNDKIT) then return end
+    local id = SOUNDKIT.QUEST_COMPLETED
+    if type(id) == "number" then pcall(PlaySound, id) end
+end
+
+local function MaybeCelebrate(e)
+    if ns.IsEntrySolved(e) then
+        if soundPlayedFor ~= e.id then
+            soundPlayedFor = e.id
+            if frame and frame:IsShown() then PlayCompleteSound() end
+        end
+    elseif soundPlayedFor == e.id then
+        soundPlayedFor = nil
+    end
+end
+
 function Tracker.Refresh()
     if not frame then return end
     local e, idx = Current()
@@ -126,8 +157,14 @@ function Tracker.Refresh()
     for i = 1, total do
         if ns.IsStepDone(e, i) then done = done + 1 end
     end
+    if barFill then
+        local w = total > 0 and (302 * done / total) or 0
+        barFill:SetWidth(math.max(1, w))
+    end
+    MaybeCelebrate(e)
     nameFS:SetText(tostring(e.name))
     if ns.IsEntrySolved(e) then
+        if barFill then barFill:SetWidth(302) end
         countFS:SetText("Secret complete - all " .. total .. " steps done.")
         stepFS:SetText("You have everything this guide covers. Pick another secret from the catalog (/sgps) whenever you are ready.")
         zoneFS:SetText(tostring(e.reward or ""))
@@ -165,6 +202,7 @@ function Tracker.Start(entry, stepIdx)
     if not ns.db then return end
     local idx = stepIdx or FirstUndone(e, 1) or 1
     ns.db.tracked = { id = e.id, step = idx }
+    if ns.IsEntrySolved(e) then soundPlayedFor = e.id end -- no fanfare for review opens
     Build()
     frame:Show()
     Tracker.Refresh()
@@ -191,7 +229,19 @@ function Tracker.Toggle()
         return
     end
     Build()
-    if frame:IsShown() then frame:Hide() else frame:Show() Tracker.Refresh() end
+    if frame:IsShown() then
+        frame:Hide()
+    else
+        frame:Show()
+        Tracker.Refresh()
+        -- If progress advanced while hidden (A5), put the player on
+        -- the current step's waypoint when the window comes back.
+        local e2, idx2 = Current()
+        if e2 and e2.steps and e2.steps[idx2]
+            and not ns.IsEntrySolved(e2) then
+            ns.SetWaypoint(e2.steps[idx2], e2.name)
+        end
+    end
 end
 
 function Tracker.Prev()
@@ -229,22 +279,28 @@ function Tracker.Next()
 end
 
 -- Called on QUEST_LOG_UPDATE: if the tracked step just completed in
--- game, advance to the next unfinished step automatically.
+-- game, advance to the next unfinished step automatically. A5: the
+-- saved position advances even while the tracker window is hidden
+-- (progress is never lost); the announcement and waypoint move
+-- happen when the window is shown, and showing it re-sets the
+-- current step's waypoint.
 function Tracker.OnQuestUpdate()
     local e, idx = Current()
-    if not e or not frame or not frame:IsShown() then
-        if e then Tracker.Refresh() end
-        return
-    end
+    if not e then return end
     if ns.IsStepDone(e, idx) then
         local nxt = FirstUndone(e, idx + 1) or FirstUndone(e, 1)
         if nxt and nxt ~= idx then
-            ns.Print("Step done - advancing your tracker.")
-            GotoStep(nxt, true)
+            if frame and frame:IsShown() then
+                ns.Print("Step done - advancing your tracker.")
+                GotoStep(nxt, true)
+            else
+                ns.db.tracked.step = nxt
+                if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
+            end
             return
         end
     end
-    Tracker.Refresh()
+    if frame and frame:IsShown() then Tracker.Refresh() end
 end
 
 -- Reopen the tracker on login when a secret was being tracked.
