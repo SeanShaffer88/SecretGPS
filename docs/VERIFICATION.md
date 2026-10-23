@@ -165,4 +165,5 @@ ring to BACKGROUND, radius derived from the minimap's width.
 | Gate (4-way version consistency 0.6.3) | PASS (exit 0) | Partially Verified |
 | Harness, both TOCs (incl. minimap assertions) | PASS | Partially Verified |
 | Packaging: v0.6.3 Retail (59,220 B) + Forever (30,242 B) zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub publish: per-file upserts OK; blob audit 27/29 MATCH at run time — Data_Expansions1/2 had already advanced locally with the (unpublished) phase-2b toy data; both remote blobs verified byte-identical to the v0.6.3 commit (a967747c / 9c759875) | ALL MATCH as published | Verified |
 | In-game — v0.6.3 (opaque parchment + dark title/meta, minimap book inside ring, tracker panel texts) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
