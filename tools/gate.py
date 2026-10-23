@@ -133,14 +133,15 @@ def main():
     for path in lua_files:
         if path.name not in toc_listed:
             failures.append(f"{path.name} exists but is in no TOC")
-    # Backdrop rule: SetBackdrop may only be *called* in UI files
-    # (UI.lua, Tracker.lua), where every backdrop frame is created
-    # with BackdropTemplate.
+    # Backdrop rule: SetBackdrop may only be *called* in UI.lua,
+    # Tracker.lua, and Core.lua (the shared StyleQuestLog /
+    # StylePanel helpers, which are only ever passed frames created
+    # with BackdropTemplate and check for SetBackdrop first).
     for path in lua_files:
         text = path.read_text()
-        if "SetBackdrop(" in text and path.name not in ("UI.lua", "Tracker.lua"):
+        if "SetBackdrop(" in text and path.name not in ("UI.lua", "Tracker.lua", "Core.lua"):
             failures.append(f"{path.name} calls SetBackdrop outside UI files")
-    for ui_name in ("UI.lua", "Tracker.lua"):
+    for ui_name in ("UI.lua", "Tracker.lua", "Core.lua"):
         ui = (ADDON / ui_name).read_text()
         if "SetBackdrop(" in ui and "BackdropTemplate" not in ui:
             failures.append(f"{ui_name} calls SetBackdrop without BackdropTemplate")
