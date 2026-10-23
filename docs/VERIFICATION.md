@@ -141,4 +141,5 @@ space; version bumped to 0.6.2 in all four places.
 | Harness, both TOCs (boot, interactions, minimap assertions included) | PASS | Partially Verified |
 | Packaging: v0.6.2 Retail (58,642 B) + Forever (29,814 B) zips, contents == TOC lists | PASS | Partially Verified |
 | GitHub publish: per-file upserts OK; full-tree blob audit (29 files) | ALL MATCH | Verified |
+| GitHub pre-release v0.6.2 with both zips attached | Published, page read back | Verified |
 | In-game — v0.6.2 look (dark frame, panels, minimap book icon) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
