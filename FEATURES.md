@@ -82,7 +82,7 @@ short version see `README.md`; for store-listing copy see
   all 33 secret records are cataloged in v0.6.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
-## Interface (v0.6.3)
+## Interface (v0.6.4)
 
 - **Classic quest log styling**: dark frames, a black list panel
   with gold titles, and parchment reading panels with ink-brown
@@ -121,14 +121,14 @@ short version see `README.md`; for store-listing copy see
 
 ## Not in this version
 
-- Per-entry journal IDs for the collected detection above (the
-  engine ships in v0.6.1; the IDs are being sourced from the
-  journals' publishers and land in a data update — until then
-  progress is quest flags + manual ticks).
+- Journal coverage for the remaining collectible types (titles,
+  achievements, transmog, hunter pets, druid forms) — pets, toys
+  and mounts are covered as of v0.6.4; the rest still use quest
+  flags + manual ticks.
 - 3D reward previews.
-- In-game verification: v0.6.1 is a pre-release build. Retail load
+- In-game verification: v0.6.4 is a pre-release build. Retail load
   and catalog rendering were verified in the live client on
-  2026-10-23; the v0.6.1 interface changes and all interaction
-  paths await a live walkthrough, and the Forever data (from the
-  beta) awaits the live client (Forever launches November 4,
-  2026).
+  2026-10-23 (v0.6.0–v0.6.2 screenshots); the v0.6.3 look fixes
+  and the v0.6.4 collection detection await a live walkthrough,
+  and the Forever data (from the beta) awaits the live client
+  (Forever launches November 4, 2026).
