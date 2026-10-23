@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.6.0 — 2026-10-23
+
+- **Mind-Seeker catalog complete: all 33 secret records.** The five
+  records missing from the Seat of Knowledge board now have their
+  own entries, transcribed from the Warcraft Secrets guides:
+  **Tobias** (all 17 Buried Satchels as waypoint steps, with the
+  satchel quest flags as the completion check), **Mimiron's
+  Jumpjets** (the 3 booster parts and the Empowered Arcane Forge),
+  **Fashion of the Fanatic Felcyclist** (the Dusk Lily escort from
+  Incognitro's Midnight continuation), **Leaders of Scholomance**
+  (the full Memory of Scholomance candle chain plus the original-
+  Scholomance boss kills) and **Wan'be's Buried Goods** (the Horde
+  treasure hunt, all four clue stops and the Zuldazar finale).
+- **Five summary entries are now full guides**: Courage (all nine
+  Larion Cub waypoints and the 5-in-10-seconds group mechanic),
+  Glimr (the complete nine-quest Glimmerfin chain), Enlightened
+  Hearthstone (the six pillar coordinates and the Ponderer's
+  Portal), Gortham (the five-conduit dungeon mechanic) and
+  J'imothy (his three Silvermoon prison spots and the channel
+  release).
+- Secrets of Azeroth no longer double-counts as a Mind-Seeker
+  record (Tobias and the Jumpjets carry their own flags now), and
+  its Tyrhold relay steps are correctly attributed to the final
+  The Race secret with the guide's console numbering.
+- Catalog is now **114 entries (92 Retail + 22 Forever)**. No code
+  changes beyond the version number; data only.
+
 ## 0.5.0 — 2026-10-23
 
 - **Renamed: SecretsGPS is now SecretGPS** (SEAN's direction) —
