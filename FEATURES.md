@@ -38,7 +38,7 @@ short version see `README.md`; for store-listing copy see
 
 ## Catalog
 
-- **109 secrets and hidden collectibles** — 87 for WoW Retail
+- **114 secrets and hidden collectibles** — 92 for WoW Retail
   (patch 12.1.5) and 22 for WoW: Forever, each client loading only
   its own game's catalog from the same codebase.
 - **Categorized browsing** by reward type: mounts, pets, toys,
@@ -78,8 +78,8 @@ short version see `README.md`; for store-listing copy see
 ## Mind-Seeker tracker
 
 - The catalog tracks the secrets that count toward the
-  **Mind-Seeker** Feat of Strength (17 of 34 for the title):
-  29 of the 34 are cataloged in v0.5.0.
+  **Mind-Seeker** Feat of Strength (solve 17 for the title):
+  all 33 secret records are cataloged in v0.6.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
 ## Commands
