@@ -8,7 +8,7 @@ See also: `FEATURES.md` (the full feature list), `DESCRIPTION.md` (store-listing
 
 ## What it does
 
-- **Categorized catalog** — browse by reward type (mounts, pets, toys, transmog, titles, questlines, and more), expansion, and whether a secret is solo, group, or time-gated. Search by name, zone, or reward.
+- **Categorized catalog** — browse by reward type (mounts, pets, toys, transmog, titles, questlines, and more), expansion, and whether a secret is solo, group, or time-gated. Search by name, zone, reward, or words inside a secret's steps.
 - **Step-by-step guides** — every entry is a short, ordered route written for in-game use, with prerequisites, difficulty, estimated time, and time-gate/RNG notes up front.
 - **SecretTracker window** — hit **Track this secret** (or **Trk** on any single step to start from there) and a small window stays on screen guiding you step by step: current step, progress %, one-click waypoint, a Done button that ticks the step and advances, and automatic advancement when the game itself completes a quest-flag step. Tracking survives reloads.
 - **Waypoints** — steps with published coordinates get a map pin in one click: through **TomTom** if you have it installed, otherwise Blizzard's native waypoint — your choice (`/sgps wp auto|native|tomtom`). Steps without a verified map ID print a copyable `/way` line instead.
@@ -16,7 +16,7 @@ See also: `FEATURES.md` (the full feature list), `DESCRIPTION.md` (store-listing
 - **Mind-Seeker tracker** — the catalog tracks the secrets that count toward the Mind-Seeker Feat of Strength and shows how close you are to the 17-of-34 needed for the title.
 - **Looks the part** — both windows are styled after the classic quest log (parchment pages, ink text), and a quest-log book button lives on your minimap: left-click for the catalog, right-click for the tracker, drag to move it.
 
-## v0.6.0 catalog (114 secrets)
+## The catalog (114 secrets)
 
 **Retail (92):** the complete research catalog — the famous puzzle chains (Lucid Nightmare, Riddler's Mind-Worm, Kosumoth, The Hivemind, Uuna → Baa'l → Waist of Time, Incognitro), the Shadowlands/Dragonflight/War Within secrets, the first Midnight secrets (Mind-Seeker meta, Gortham, Unfazed Diver, Labyrinth of Kindo'jan), evergreen rare camps (Time-Lost Proto-Drake, Aeonaxx, Voidtalon), spirit beasts, hidden artifact appearances, and more. The Long-Forgotten Hippogryph entry includes the full 110-point crystal list as checkable waypoints. All 33 Mind-Seeker secret records are cataloged (the Seat of Knowledge displays those 33 records plus the Mind-Seeker trophy itself).
 
@@ -41,7 +41,7 @@ Unzip so the `SecretGPS` folder sits in your client's `Interface/AddOns/` folder
 
 ## Honest limits
 
-- v0.5.0 is a pre-release build for in-game testing. Retail data is transcribed from community guides (chiefly Warcraft Secrets, the Secret Finding community's guide site, plus Wowhead, Icy Veins, Method and Lost WOW) and verified against patch 12.1.5 documentation, but it has not yet been walked end-to-end in game for every entry.
+- v0.6.1 is a pre-release build for in-game testing. Retail data is transcribed from community guides (chiefly Warcraft Secrets, the Secret Finding community's guide site, plus Wowhead, Icy Veins, Method and Lost WOW) and verified against patch 12.1.5 documentation. The addon itself has been run in the live Retail client — loading and catalog rendering are verified (2026-10-23) — but not every entry has been walked end-to-end in game, and the v0.6.1 interface changes await a full walkthrough.
 - Renamed from SecretAtlas in v0.4.0, and to SecretGPS in v0.5.0. The SavedVariables store was renamed each time, so any progress from earlier test builds resets once on upgrade.
 - WoW: Forever entries come from the Forever beta and must be re-verified on the live client after its November 4, 2026 launch.
 - A few entries are still summaries where full community steps could not be extracted (some Midnight pets and a handful of older pets/toys). Those entries say so in their steps rather than guessing. The four v0.2 summary mount entries (Nazjatar Blood Serpent, Child of Torcali, Bound Shadehound, Xy Trustee's Gearglider) and the Library Books locations were completed in v0.3.0 from Warcraft Secrets, Icy Veins, Blizzard Watch, Method and Lost WOW guides.
