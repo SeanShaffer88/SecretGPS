@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.6.2 — 2026-10-23
+
+The look, fixed — driven by live in-game screenshots of 0.6.1:
+
+- **Quest log styling rebuilt**: the 0.6.1 parchment was built from
+  the original QuestLogFrame book art, which does not tile at these
+  window sizes on the current client (dark slabs over the detail
+  pane, the book emblem overlapping the title, list text unreadable
+  where art sat under it). Both windows now build the classic look
+  directly: a dark frame, a black list panel with gold titles, and
+  parchment reading panels with ink text — like the reference frame,
+  with no legacy art files involved.
+- **Minimap button icon fixed**: the quest-log book icon path
+  renders blank on the current client (the button showed as an
+  empty ring). It now uses a book item icon, which resolves on
+  every client; the catalog title carries the same emblem.
+- **Footer overlap fixed**: the source-guide line and the footer
+  hint shared a line and collided; the source now sits at the
+  bottom right, the hint at the bottom left, each in its own space.
+- Contrast passes throughout: step tick/WP markers darkened for
+  parchment, the Type menu restyled to the dark frame, tracker
+  title/name in gold on dark.
+
 ## 0.6.1 — 2026-10-23
 
 The interface release — the result of a full review pass:
