@@ -12,6 +12,7 @@ local function Add(e) ns.Entries[#ns.Entries + 1] = e end
 
 Add({
   id = "bound-shadehound", name = "Bound Shadehound", type = "mount",
+  collection = { kind = "mount", id = 1441 },
   expansion = "shadowlands", game = "retail", zone = "The Maw",
   reward = "Bound Shadehound mount", mindSeeker = true,
   solo = "Solo", difficulty = 4, estTime = "Multi-part Maw chain",
@@ -29,6 +30,7 @@ Add({
 
 Add({
   id = "deepstar-aurelid", name = "Deepstar Aurelid (Hirukon)", type = "mount",
+  collection = { kind = "mount", id = 1434 },
   expansion = "shadowlands", game = "retail", zone = "Zereth Mortis",
   reward = "Deepstar Aurelid mount (from Hirukon)",
   solo = "Solo", difficulty = 3, estTime = "Fishing RNG dependent",
@@ -44,16 +46,17 @@ Add({
 })
 
 Add({
-  id = "tahonta", name = "Tahonta", type = "mount",
+  id = "tahonta", name = "Bonehoof Tauralus", type = "mount",
+  collection = { kind = "mount", id = 1366 },
   expansion = "shadowlands", game = "retail", zone = "Maldraxxus",
-  reward = "Tahonta mount (rare elite drop)",
+  reward = "Bonehoof Tauralus mount (drops from the rare elite Tahonta)",
   solo = "Solo", difficulty = 2, estTime = "Rare spawn camp",
-  timeGate = nil, rng = "Rare spawn; drop rate historically much higher with the Necrolord covenant feature active, low otherwise", prereq = nil,
+  timeGate = nil, rng = "Necrolord covenant only: Abomination Factory rank 2, with the construct Neena accompanying the kill (per WarcraftMounts)", prereq = nil,
   source = "https://warcraft-secrets.com/guides/shadowlands-secrets",
   verifiedPatch = "12.1.5",
   steps = {
     { text = "Find and defeat the rare elite Tahonta in Maldraxxus for a chance at the mount", zone = "Maldraxxus" },
-    { text = "Honest gap: Tahonta's current drop rules were not verified in the research pass - check the source guide / Wowhead for the present-day drop state before camping", zone = "Maldraxxus" },
+    { text = "Drop rules (per WarcraftMounts): you must be Necrolord with Abomination Factory rank 2, and the construct Neena must be accompanying you when Tahonta dies", zone = "Maldraxxus" },
   },
 })
 
@@ -160,6 +163,7 @@ Add({
 
 Add({
   id = "lizi", name = "Lizi, Thunderspine Tramper", type = "mount",
+  collection = { kind = "mount", id = 1639 },
   expansion = "dragonflight", game = "retail", zone = "Ohn'ahran Plains",
   reward = "Lizi, Thunderspine Tramper mount",
   solo = "Solo", difficulty = 2, estTime = "Quest chain",
@@ -175,6 +179,7 @@ Add({
 
 Add({
   id = "traders-ottuks", name = "Trader's Ottuks (barter set)", type = "mount",
+  collection = { kind = "mount", ids = { 1546, 1653, 1655, 1657, 1658, 1659 } },
   expansion = "dragonflight", game = "retail", zone = "Azure Span (Iskaara)",
   reward = "Trader's Ottuk mounts (barter, not gold)",
   solo = "Solo", difficulty = 3, estTime = "Dungeon drop dependent",
@@ -192,6 +197,7 @@ Add({
 
 Add({
   id = "ancient-salamanther", name = "Ancient Salamanther", type = "mount",
+  collection = { kind = "mount", id = 1619 },
   expansion = "dragonflight", game = "retail", zone = "Forbidden Reach",
   reward = "Ancient Salamanther mount (rare drop)",
   solo = "Solo", difficulty = 5, estTime = "Heavy RNG camp",
@@ -327,6 +333,7 @@ Add({
 
 Add({
   id = "voidfire-deathcycle", name = "Voidfire Deathcycle", type = "mount",
+  collection = { kind = "mount", id = 1948 },
   expansion = "tww", game = "retail", zone = "Horrific Visions Revisited (Stormwind / Orgrimmar) > Dornogal",
   reward = "Voidfire Deathcycle mount", mindSeeker = true,
   solo = "Solo", difficulty = 4, estTime = "Multi-week (rotation-gated)",
@@ -343,6 +350,7 @@ Add({
 
 Add({
   id = "thrayir", name = "Thrayir, Eyes of the Siren", type = "mount",
+  collection = { kind = "mount", id = 2322 },
   expansion = "tww", game = "retail", zone = "Siren Isle",
   reward = "Thrayir, Eyes of the Siren mount", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "Days",
@@ -360,6 +368,7 @@ Add({
 
 Add({
   id = "beledars-spawn", name = "Beledar's Spawn", type = "mount",
+  collection = { kind = "mount", id = 2192 },
   expansion = "tww", game = "retail", zone = "Hallowfall",
   reward = "Beledar's Spawn mount (rare drop)",
   solo = "Solo", difficulty = 4, estTime = "3-hour phase cycle, repeated kills",
@@ -376,6 +385,7 @@ Add({
 
 Add({
   id = "siesbarg", name = "Siesbarg", type = "mount",
+  collection = { kind = "mount", id = 2222 },
   expansion = "tww", game = "retail", zone = "Azj-Kahet",
   reward = "Siesbarg mount",
   solo = "Solo", difficulty = 5, estTime = "One of the longest grinds in The War Within",
@@ -392,6 +402,7 @@ Add({
 
 Add({
   id = "alunira", name = "Alunira", type = "mount",
+  collection = { kind = "mount", id = 2176 },
   expansion = "tww", game = "retail", zone = "Isle of Dorn",
   reward = "Alunira mount (high drop chance once her shield is broken)",
   solo = "Solo", difficulty = 4, estTime = "Shard farm dependent",
@@ -457,6 +468,7 @@ Add({
 
 Add({
   id = "xy-trustees-gearglider", name = "Xy Trustee's Gearglider", type = "mount",
+  collection = { kind = "mount", id = 1482 },
   expansion = "tww", game = "retail", zone = "Zereth Mortis / Korthia-era content (Cartel Xy)",
   reward = "Xy Trustee's Gearglider mount", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "See guide",
@@ -540,28 +552,29 @@ Add({
 
 Add({
   id = "labyrinth-of-kindojan", name = "Labyrinth of Kindo'jan (delve mount)", type = "mount",
+  collection = { kind = "mount", id = 3144 },
   expansion = "midnight", game = "retail", zone = "Labyrinth of Kindo'jan (Eversong Woods entrance)",
-  reward = "Loa-Blessed delve mount (exact name unconfirmed - see first step) + related titles/achievements",
+  reward = "Loa-Blessed Wayfarer mount + related titles/achievements",
   solo = "Solo", difficulty = 4, estTime = "Endgame delve progression to Tier 11",
   timeGate = nil, rng = nil, prereq = "Intro quest from Kul'amara the Feral; endgame delve gearing for Tier 11",
   source = "https://wow.gg/guides/labyrinth-of-kindojan",
   verifiedPatch = "12.1.5",
   steps = {
-    { text = "NAME CHECK: sources disagree on this mount's exact name - 'Loa-Blessed Wayfarer' in one guide, 'Loa-Blessed Wanderer' in another. Verify the name in your in-game mount journal; this entry does not pick one", zone = "Mount journal" },
     { text = "Enter the Labyrinth of Kindo'jan - the entrance is in Eversong Woods", zone = "Eversong Woods", x = 63.0, y = 72.2 },
     { text = "Take the intro quest from Kul'amara the Feral and complete the tutorial run with Valeera - full access is warband-wide per the video guide", zone = "Labyrinth of Kindo'jan" },
     { text = "Progress through the delve's 9 chambers, raising your tier as your gear allows", zone = "Labyrinth of Kindo'jan" },
-    { text = "Defeat Kindo'jan solo on Tier 11 to earn the mount", zone = "Labyrinth of Kindo'jan" },
+    { text = "Defeat Kindo'jan solo on Tier 11 to earn the Loa-Blessed Wayfarer (name confirmed against WarcraftMounts and the Icy-Veins Midnight mount list)", zone = "Labyrinth of Kindo'jan" },
     { text = "Related Labyrinth goals (per source guides): Maze Runner title (all 9 chambers in one Tier 11 run), Treasure Hound (all 44 Sturdy Chests), Lockpickin' (open the hidden locked door 20 times), Lone Raider (deathless solo Tier 11)", zone = "Labyrinth of Kindo'jan" },
   },
 })
 
 Add({
-  id = "gold-sink-mount", name = "12.1.5 Gold-Sink Mount", type = "mount",
+  id = "gold-sink-mount", name = "Sporebearer Fungal Strider", type = "mount",
+  collection = { kind = "mount", id = 3137 },
   expansion = "midnight", game = "retail", zone = "Harandar (vendor near the portals)",
-  reward = "Customizable gold-sink mount with auction house / transmog utility options",
+  reward = "Sporebearer Fungal Strider - customizable 5,000,000 gold mount with auction house / transmog utility options",
   solo = "Solo", difficulty = 1, estTime = "One purchase (plus the gold)",
-  timeGate = nil, rng = nil, prereq = "5,000,000 gold confirmed for the mount itself",
+  timeGate = nil, rng = nil, prereq = "5,000,000 gold for the mount itself; utility add-ons 1,500,000 (auction house) + 500,000 (transmogrifier) per WarcraftMounts",
   source = "https://www.mmogah.com/news/wow/what-to-do-in-wow-midnight-1215",
   verifiedPatch = "12.1.5",
   steps = {
@@ -588,6 +601,7 @@ Add({
 
 Add({
   id = "midnight-skyriding-glyphs", name = "Midnight Skyriding Glyphs: Crimson Dragonhawk", type = "mount",
+  collection = { kind = "mount", id = 2756 },
   expansion = "midnight", game = "retail", zone = "Midnight zones + Coiled Isle",
   reward = "Crimson Dragonhawk mount (glyph collection)",
   solo = "Solo", difficulty = 2, estTime = "Fly-through collection across all Midnight zones",
