@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.6 — 2026-10-23
+
+- **Minimap ring and icon aligned**: the tracking-border
+  texture's ring artwork sits in the top-left of its canvas
+  (the rest is drop shadow), so anchoring the texture by its
+  center put the visible ring up-left of the book icon —
+  visible in field screenshots as the book hanging off the
+  ring's lower-right edge. The ring is now anchored top-left
+  to the button at the texture's natural 53 size, the layout
+  minimap-button libraries use, which centers the artwork
+  itself on the button.
+
 ## 0.6.5 — 2026-10-23
 
 - **Text size control**: the catalog header gains a "Text:"
