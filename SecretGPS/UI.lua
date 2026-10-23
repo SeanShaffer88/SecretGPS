@@ -752,9 +752,17 @@ function UI.Build()
             mb:SetFrameLevel(mfl + 5)
         end
         local ring = mb:CreateTexture(nil, "BACKGROUND")
-        ring:SetSize(52, 52)
-        ring:SetPoint("CENTER", 0, 0)
+        ring:SetSize(53, 53)
+        ring:SetPoint("TOPLEFT", mb, "TOPLEFT", 0, 0)
         ring:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+        -- The tracking-border texture's ring artwork sits in the
+        -- TOP-LEFT of its canvas (the rest is drop shadow), so a
+        -- CENTER anchor puts the visible ring ~11 units up-left of
+        -- the icon - SEAN's 2026-10-23 minimap crop showed the book
+        -- hanging off the ring's lower-right. Anchoring the texture
+        -- TOPLEFT to the button at its natural 53 size (the layout
+        -- minimap-button libraries use) centers the artwork itself
+        -- on the button, where the icon already sits.
         -- The icon draws ABOVE the ring (OVERLAY vs BACKGROUND):
         -- with the icon underneath, this client's tracking-border
         -- texture hides it - the button read as an empty ring in
