@@ -188,4 +188,6 @@ auto-mark the entry) upgrades them to Verified.
 | Gate (4-way version consistency 0.6.4, collection schema incl. ids) | PASS (exit 0) | Partially Verified |
 | Harness, both TOCs (collection probes live for pets/toys/mounts) | PASS | Partially Verified |
 | Packaging: v0.6.4 Retail (59,645 B) + Forever (30,360 B) zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub publish: per-file upserts OK from a clean tree; blob audit run twice (API reads failed partway through each run) — the union of both runs covers all 29 files | ALL MATCH (union) | Verified |
+| GitHub pre-release v0.6.4 with both zips attached | Published, page read back | Verified |
 | In-game — collection detection (owned pet/toy/mount auto-solves) | NOT RUN | **Unverified** |
