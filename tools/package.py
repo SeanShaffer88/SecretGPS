@@ -14,7 +14,7 @@ import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ADDON = ROOT / "SecretGPS"
-VERSION = "0.6.5"
+VERSION = "0.6.6"
 VARIANTS = {
     "Retail": "SecretGPS.toc",
     "Forever": "SecretGPS_Camelot.toc",
