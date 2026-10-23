@@ -1,10 +1,13 @@
 # Screenshot capture list (from real runs on SEAN's machine)
 
 Capture at native resolution, UI scale unmodified, character/world
-visible behind the window where natural.
+visible behind the window where natural. The current look is the
+classic quest log styling (v0.6.1): parchment pages, ink text —
+captures should show it, including the minimap button.
 
-1. `01-catalog-retail.png` — Retail client, catalog open, Lucid
-   Nightmare selected, first steps visible.
+1. `01-catalog-retail.png` — Retail client, catalog open (parchment
+   styling visible), Lucid Nightmare selected, first steps visible.
+   No "Screen Captured" toast in frame.
 2. `02-mindseeker.png` — Retail client, Mind-Seeker entry selected,
    showing the Pearl of the Abyss steps.
 3. `03-waypoint.png` — Retail client, just after clicking WP on a
@@ -14,6 +17,12 @@ visible behind the window where natural.
    catalog open, Cozy Sleeping Bag selected.
 5. `05-progress.png` — Any client, an entry with some steps ticked
    (quest-flag and manual) showing the progress counts in the list.
+6. `06-minimap-button.png` — Close crop of the minimap showing the
+   quest-log book button on its ring.
+7. `07-type-menu.png` — Catalog with the Type dropdown open,
+   showing the type counts.
+8. `08-tracker.png` — The SecretTracker window mid-secret, showing
+   the current step and the progress bar partly filled.
 
 Wire each into README.md's Screenshots section as it arrives; refresh
 when the UI changes materially.
