@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.6.1 — 2026-10-23
+
+The interface release — the result of a full review pass:
+
+- **Classic quest log styling**: the catalog and the SecretTracker
+  now wear the classic quest log look — parchment pages built from
+  the original book art, ink-brown text, on both clients.
+- **Minimap button**: a quest-log book button on the minimap
+  (left-click: catalog; right-click: tracker; drag it around the
+  ring — its position is saved).
+- **Catalog fixes and polish**: the detail pane no longer overflows
+  its window; tooltips on every control; mouse-wheel scrolling in
+  both lists; the selected secret is highlighted; the Type filter
+  is now a dropdown menu with counts (was click-to-cycle); search
+  also matches step text and step zones.
+- **SecretTracker**: a progress bar, a completion sound, and it now
+  advances its saved step even while hidden (the waypoint is set
+  when you open it again).
+- **Collected detection (engine)**: an entry whose reward is
+  already in your mount/pet/toy journal counts as solved. The
+  per-entry journal IDs are being sourced and arrive in a data
+  update; no entry uses it yet.
+- Under the hood: catalog refreshes are coalesced on quest-log
+  updates, saved data is schema-versioned with a migration path,
+  and two data bugs were fixed (the Housing type label, and
+  Wan'be's Buried Goods showing a raw expansion key).
+
 ## 0.6.0 — 2026-10-23
 
 - **Mind-Seeker catalog complete: all 33 secret records.** The five
