@@ -1,6 +1,6 @@
-# SecretsGPS — Features
+# SecretGPS — Features
 
-The full feature list for the SecretsGPS addon (v0.4.0). For the
+The full feature list for the SecretGPS addon (v0.5.0). For the
 short version see `README.md`; for store-listing copy see
 `DESCRIPTION.md`.
 
@@ -79,12 +79,12 @@ short version see `README.md`; for store-listing copy see
 
 - The catalog tracks the secrets that count toward the
   **Mind-Seeker** Feat of Strength (17 of 34 for the title):
-  29 of the 34 are cataloged in v0.4.0.
+  29 of the 34 are cataloged in v0.5.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
 ## Commands
 
-- `/sgps` or `/secretsgps` (or `/sa`) — open/close the catalog
+- `/sgps` or `/secretgps` (or `/sa`) — open/close the catalog
 - `/sgps track` — show/hide the SecretTracker window
 - `/sgps untrack` — stop tracking
 - `/sgps wp auto|native|tomtom` — waypoint provider
@@ -108,7 +108,7 @@ short version see `README.md`; for store-listing copy see
 - Automatic "already collected" detection from the mount/pet/toy
   journals (progress today is quest flags + manual ticks).
 - A minimap button and 3D reward previews.
-- In-game verification: v0.4.0 is a pre-release build. Retail data
+- In-game verification: v0.5.0 is a pre-release build. Retail data
   is transcribed from community guides and the Forever data from
   the beta; both await live-client walkthroughs (Forever launches
   November 4, 2026).
