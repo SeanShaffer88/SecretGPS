@@ -14,6 +14,7 @@ See also: `FEATURES.md` (the full feature list), `DESCRIPTION.md` (store-listing
 - **Waypoints** — steps with published coordinates get a map pin in one click: through **TomTom** if you have it installed, otherwise Blizzard's native waypoint — your choice (`/sgps wp auto|native|tomtom`). Steps without a verified map ID print a copyable `/way` line instead.
 - **Progress that knows** — steps tied to hidden quest flags are checked against the game itself, so a step you finished months ago is already ticked. Anything else can be ticked manually, and progress is saved between sessions.
 - **Mind-Seeker tracker** — the catalog tracks the secrets that count toward the Mind-Seeker Feat of Strength and shows how close you are to the 17-of-34 needed for the title.
+- **Looks the part** — both windows are styled after the classic quest log (parchment pages, ink text), and a quest-log book button lives on your minimap: left-click for the catalog, right-click for the tracker, drag to move it.
 
 ## v0.6.0 catalog (114 secrets)
 
