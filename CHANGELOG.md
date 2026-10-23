@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.5 — 2026-10-23
+
+- **Text size control**: the catalog header gains a "Text:"
+  button (also `/sgps text`) cycling 100% / 110% / 120% /
+  130% / 145%. The new default is 120% — the guide text read
+  small at the game's own size. The windows scale with the
+  text, so layout and buttons grow together and nothing
+  overlaps at any size; the choice is saved and applies to
+  the tracker too.
+
 ## 0.6.4 — 2026-10-23
 
 Collection detection completed (A7 phase 2):
