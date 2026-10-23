@@ -228,6 +228,42 @@ function UI.Toggle()
     if UI.frame:IsShown() then UI.frame:Hide() else UI.frame:Show() UI.Refresh() end
 end
 
+-- Text size (SEAN, 2026-10-23: the guide text read small). The
+-- setting scales the two addon windows, so text, layout and
+-- buttons grow together and nothing can overlap at any size.
+-- Default 1.2 - one step larger than the game's own panels.
+local TEXT_SCALES = { 1.0, 1.1, 1.2, 1.3, 1.45 }
+
+local function CurrentTextScale()
+    local s = ns.db and ns.db.settings and ns.db.settings.textScale
+    if type(s) ~= "number" then return 1.2 end
+    return s
+end
+
+function UI.ApplyTextScale()
+    local s = CurrentTextScale()
+    if UI.frame and UI.frame.SetScale then UI.frame:SetScale(s) end
+    if UI.textBtn then
+        UI.textBtn:SetText("Text: " .. math.floor(s * 100 + 0.5) .. "%")
+    end
+    if ns.Tracker and ns.Tracker.SetScale then ns.Tracker.SetScale(s) end
+end
+
+function UI.CycleTextScale()
+    if not state.built then UI.Build() end
+    local cur = CurrentTextScale()
+    local idx = 1
+    for i = 1, #TEXT_SCALES do
+        if math.abs(TEXT_SCALES[i] - cur) < 0.01 then
+            idx = i
+            break
+        end
+    end
+    local nxt = TEXT_SCALES[idx % #TEXT_SCALES + 1]
+    if ns.db and ns.db.settings then ns.db.settings.textScale = nxt end
+    UI.ApplyTextScale()
+end
+
 function UI.Build()
     if state.built then return end
     local f = CreateFrame("Frame", "SecretGPSFrame", UIParent, "BackdropTemplate")
@@ -414,6 +450,18 @@ function UI.Build()
             "Hide the secrets you have already solved, so the list shows only what is left to find.")
     end)
     hideBtn:SetScript("OnLeave", HideTip)
+
+    local textBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    textBtn:SetSize(94, 22)
+    textBtn:SetPoint("TOPLEFT", 830, -66)
+    textBtn:SetText("Text: 120%")
+    textBtn:SetScript("OnClick", function() UI.CycleTextScale() end)
+    textBtn:SetScript("OnEnter", function(self)
+        ShowTip(self, "Text size",
+            "Cycle the text size of the SecretGPS windows (the windows scale with the text, so nothing overlaps). Also: /sgps text")
+    end)
+    textBtn:SetScript("OnLeave", HideTip)
+    UI.textBtn = textBtn
 
     -- List panel: black, like the classic frame's quest list.
     local listPanel = CreateFrame("Frame", nil, f, "BackdropTemplate")
@@ -782,5 +830,6 @@ function UI.Build()
         UI.minimapButton = mb
     end
     state.built = true
+    UI.ApplyTextScale()
     UI.Refresh()
 end
