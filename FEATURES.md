@@ -1,6 +1,6 @@
 # SecretGPS — Features
 
-The full feature list for the SecretGPS addon (v0.5.0). For the
+The full feature list for the SecretGPS addon (v0.6.1). For the
 short version see `README.md`; for store-listing copy see
 `DESCRIPTION.md`.
 
