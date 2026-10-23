@@ -8,6 +8,7 @@ local function Add(e) ns.Entries[#ns.Entries + 1] = e end
 
 Add({
   id = "lucid-nightmare", name = "Lucid Nightmare", type = "mount",
+  collection = { kind = "mount", id = 961 },
   expansion = "legion", game = "retail", zone = "Dalaran > Broken Isles > Deadwind Pass",
   reward = "Lucid Nightmare mount", mindSeeker = true,
   solo = "Solo", difficulty = 4, estTime = "2-5h",
@@ -29,6 +30,7 @@ Add({
 
 Add({
   id = "riddlers-mind-worm", name = "Riddler's Mind-Worm", type = "mount",
+  collection = { kind = "mount", id = 947 },
   expansion = "legion", game = "retail", zone = "Azeroth-wide",
   reward = "Riddler's Mind-Worm mount", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "1-2h",
@@ -45,6 +47,7 @@ Add({
 
 Add({
   id = "kosumoth", name = "Kosumoth the Hungering", type = "mount",
+  collection = { kind = "mount", id = 838 },
   expansion = "legion", game = "retail", zone = "Broken Shore > Broken Isles",
   reward = "Fathom Dweller mount / Hungering Claw pet (world quest reward rotates)", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "~1h",
@@ -175,6 +178,7 @@ Add({
 
 Add({
   id = "long-forgotten-hippogryph", name = "Long-Forgotten Hippogryph", type = "mount",
+  collection = { kind = "mount", id = 802 },
   expansion = "legion", game = "retail", zone = "Azsuna",
   reward = "Reins of the Long-Forgotten Hippogryph mount", mindSeeker = true,
   solo = "Solo (competitive race)", difficulty = 4, estTime = "Camp / race - respawn reported ~2-6h (community estimate)",
@@ -191,6 +195,7 @@ Add({
 
 Add({
   id = "the-hivemind", name = "The Hivemind", type = "mount",
+  collection = { kind = "mount", id = 1025 },
   expansion = "bfa", game = "retail", zone = "Azeroth-wide > Court of Stars",
   reward = "The Hivemind mount (carries only your attuned group of 5)", mindSeeker = true,
   solo = "Group: exactly 5", difficulty = 5, estTime = "3-6h total",
@@ -212,6 +217,7 @@ Add({
 
 Add({
   id = "slime-serpent", name = "Slime Serpent", type = "mount",
+  collection = { kind = "mount", id = 1445 },
   expansion = "shadowlands", game = "retail", zone = "Plaguefall (Maldraxxus)",
   reward = "Slime Serpent mount", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "~20m",
@@ -227,6 +233,7 @@ Add({
 
 Add({
   id = "hand-of-nilganihmaht", name = "Hand of Nilganihmaht", type = "mount",
+  collection = { kind = "mount", id = 1503 },
   expansion = "shadowlands", game = "retail", zone = "The Maw (+ Rift phase)",
   reward = "Hand of Nilganihmaht mount", mindSeeker = true,
   solo = "Solo", difficulty = 4, estTime = "Multi-week possible",
@@ -243,6 +250,7 @@ Add({
 
 Add({
   id = "sinrunner-blanchy", name = "Sinrunner Blanchy", type = "mount",
+  collection = { kind = "mount", id = 1414 },
   expansion = "shadowlands", game = "retail", zone = "Revendreth",
   reward = "Sinrunner Blanchy mount", mindSeeker = true,
   solo = "Solo", difficulty = 2, estTime = "6 days (time-gated)",
@@ -258,6 +266,7 @@ Add({
 
 Add({
   id = "wildseed-cradle", name = "Wildseed Cradle", type = "mount",
+  collection = { kind = "mount", id = 1397 },
   expansion = "shadowlands", game = "retail", zone = "Ardenweald (Garden of Night)",
   reward = "Wildseed Cradle mount", mindSeeker = false,
   solo = "Solo", difficulty = 1, estTime = "~15m",
@@ -277,6 +286,7 @@ Add({
 
 Add({
   id = "shimmermist-runner", name = "Shimmermist Runner", type = "mount",
+  collection = { kind = "mount", id = 1360 },
   expansion = "shadowlands", game = "retail", zone = "Ardenweald (Mistveil Tangle maze)",
   reward = "Shimmermist Runner mount", mindSeeker = false,
   solo = "Solo", difficulty = 2, estTime = "~10m",
@@ -296,6 +306,7 @@ Add({
 
 Add({
   id = "otto", name = "Otto", type = "mount",
+  collection = { kind = "mount", id = 1656 },
   expansion = "dragonflight", game = "retail", zone = "Waking Shores / Dragon Isles fishing",
   reward = "Otto mount (ottuk with shades)", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "Hours of fishing (Kingfin is the choke point)",
@@ -314,6 +325,7 @@ Add({
 
 Add({
   id = "divine-kiss-of-ohnahra", name = "Divine Kiss of Ohn'ahra", type = "mount",
+  collection = { kind = "mount", id = 1545 },
   expansion = "dragonflight", game = "retail", zone = "Ohn'ahran Plains",
   reward = "Divine Kiss of Ohn'ahra mount", mindSeeker = false,
   solo = "Solo", difficulty = 3, estTime = "Dungeon runs (after the Renown gate)",
@@ -331,6 +343,7 @@ Add({
 
 Add({
   id = "magmashell", name = "Magmashell", type = "mount",
+  collection = { kind = "mount", id = 1469 },
   expansion = "dragonflight", game = "retail", zone = "Waking Shores",
   reward = "Magmashell mount (magma snail)", mindSeeker = false,
   solo = "Solo", difficulty = 2, estTime = "Shell drop, then a 20-second channel",
@@ -366,6 +379,7 @@ Add({
 
 Add({
   id = "incognitro", name = "Incognitro, the Indecipherable Felcycle", type = "mount",
+  collection = { kind = "mount", id = 1943 },
   expansion = "tww", game = "retail", zone = "Dornogal > Azj-Kahet / Hallowfall > Karazhan Catacombs",
   reward = "Incognitro, the Indecipherable Felcycle mount", mindSeeker = true,
   solo = "Solo", difficulty = 5, estTime = "Days for most players",
