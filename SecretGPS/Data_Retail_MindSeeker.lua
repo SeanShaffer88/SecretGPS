@@ -44,6 +44,7 @@ Add({
 
 Add({
   id = "mimirons-jumpjets", name = "Mimiron's Jumpjets", type = "mount",
+  collection = { kind = "mount", id = 1813 },
   expansion = "dragonflight", game = "retail", zone = "Azeroth-wide",
   reward = "Mimiron's Jumpjets mount", mindSeeker = true,
   solo = "Small group (parts 1 and 3 need other players)", difficulty = 3, estTime = "~1h",
