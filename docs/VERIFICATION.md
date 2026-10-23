@@ -116,3 +116,27 @@ caught and fixed the Housing label and Wan'be expansion-key bugs).
 | GitHub publish: per-file upserts OK; full-tree blob audit | ALL MATCH | Verified |
 | GitHub pre-release v0.6.1 with both zips attached | Published, page read back | Verified |
 | In-game — v0.6.1 changes (parchment tiles, minimap button, dropdown, wheel, sound) | NOT RUN — awaits SEAN's walkthrough (v0.6.0 load/render verified in Retail 2026-10-23) | **Unverified** |
+
+## v0.6.2 — the look, fixed (2026-10-23)
+
+Driven by SEAN's live Retail screenshots of v0.6.1 (2026-10-23):
+the QuestLogFrame book tiles render as dark slabs over the detail
+pane and a giant emblem over the title at catalog size, list text
+is unreadable where tile art sits under it, the footer hint and
+source line overlap, and the minimap button shows as an empty
+ring (the UI-QuestLog-BookIcon path renders blank). SEAN supplied
+the target: the classic quest log frame (dark frame, black list
+with gold titles, parchment detail).
+
+Fixes: ns.StyleQuestLog / ns.StylePanel rebuilt on backdrop colors
+(no legacy art); catalog gains a black list panel (gold titles) and
+a parchment detail panel; tracker gains a parchment step panel;
+minimap + title emblem use the INV_Misc_Book_09 item icon with
+fallbacks; footer hint (left) and source (right) no longer share
+space; version bumped to 0.6.2 in all four places.
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (incl. backdrop rule extended to Core.lua stylers, 4-way version consistency 0.6.2) | PASS (exit 0) | Partially Verified |
+| Harness, both TOCs (boot, interactions, minimap assertions included) | PASS | Partially Verified |
+| In-game — v0.6.2 look (dark frame, panels, minimap book icon) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
