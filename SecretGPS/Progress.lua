@@ -20,6 +20,40 @@ local function IsQuestDone(questID)
 end
 ns.IsQuestDone = IsQuestDone
 
+-- A7 phase 1: journal-based collected detection. An entry may carry
+-- collection = { kind = "mount"|"pet"|"toy", id = n }; when the
+-- player's journal already holds it, the secret counts as solved,
+-- the same way a completed quest flag does. Every API is probed and
+-- pcall-wrapped: a missing or changed API reads as "not collected",
+-- never as an error. (IDs are sourced per entry in the phase 2 data
+-- pass; the field is schema-validated by the gate.)
+local function IsCollected(entry)
+    local c = entry and entry.collection
+    if type(c) ~= "table" or type(c.id) ~= "number" then return false end
+    if c.kind == "pet" then
+        if C_PetJournal and C_PetJournal.GetNumCollectedInfo then
+            local ok, n = pcall(C_PetJournal.GetNumCollectedInfo, c.id)
+            if ok and type(n) == "number" then return n > 0 end
+        end
+    elseif c.kind == "mount" then
+        if C_MountJournal and C_MountJournal.GetMountInfoByID then
+            local ok, res = pcall(function()
+                local _, _, _, _, _, _, _, _, _, _, collected =
+                    C_MountJournal.GetMountInfoByID(c.id)
+                return collected
+            end)
+            if ok then return res and true or false end
+        end
+    elseif c.kind == "toy" then
+        if PlayerHasToy then
+            local ok, res = pcall(PlayerHasToy, c.id)
+            if ok then return res and true or false end
+        end
+    end
+    return false
+end
+ns.IsCollected = IsCollected
+
 local function StepHasQuest(step)
     return step and step.questFlag and true or false
 end
@@ -64,6 +98,7 @@ local function IsEntrySolved(entry)
     if not entry then return false end
     local db = ns.db
     if db and db.manualComplete and db.manualComplete[entry.id] then return true end
+    if IsCollected(entry) then return true end
     if entry.completion and entry.completion.questFlags then
         local flags = entry.completion.questFlags
         if #flags > 0 then
