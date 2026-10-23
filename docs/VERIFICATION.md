@@ -1,13 +1,13 @@
-# SecretsGPS — Verification
+# SecretGPS — Verification
 
 Labels: **Verified** (observed in the real client) · **Partially
 Verified** (out-of-game gate passed) · **Unverified** (not yet run).
 
-## v0.4.0 — 2026-10-23 (renamed to SecretsGPS)
+## v0.4.0 — 2026-10-23 (renamed to SecretGPS)
 
 | Check | Result | Label |
 |---|---|---|
-| Rename sweep: zero `SecretAtlas` strings remain outside git history; folder/TOCs/SavedVariables/slash all SecretsGPS; gate re-run immediately after the rename (before new code) | PASS | Partially Verified |
+| Rename sweep: zero `SecretAtlas` strings remain outside git history; folder/TOCs/SavedVariables/slash all SecretGPS; gate re-run immediately after the rename (before new code) | PASS | Partially Verified |
 | Lua parse, all 14 .lua files (incl. new Tracker.lua) | PASS | Partially Verified |
 | Harness, Retail TOC: TomTom waypoint path (stubbed TomTom.AddWaypoint receives the mapID point), tracker start/stop, Done-advance ticking, tracker skipping the flag-done Lucid step 1, `/sgps wp` + track/untrack slash | PASS | Partially Verified |
 | Harness, Forever TOC: same tracker assertions pass; TomTom test notes no mapID steps exist on this client (expected) | PASS | Partially Verified |
@@ -55,7 +55,7 @@ Verified** (out-of-game gate passed) · **Unverified** (not yet run).
 | Coordinate / ID audit: mapIDs in data are only the source-published set (13, 46, 885, 1543, 2025, 2255); quest flags are only the report's Lucid Nightmare (47826–47885) and Uuna (50098–50109) sets | PASS (grep audit) | Partially Verified |
 | Mocked-frame startup harness, Retail TOC: loads, ADDON_LOADED + PLAYER_LOGIN fire, UI builds (BackdropTemplate rule respected — mock grants SetBackdrop only to BackdropTemplate frames), `/sa` toggles, every entry selects + refreshes, native waypoint path taken on a mapID step, flag-47826 step reads done, manual tick toggles on an unflagged step, QUEST_LOG_UPDATE refresh, Mind-Seeker counts read 0/16 | PASS | Partially Verified |
 | Mocked-frame startup harness, Forever TOC: same suite, 4 entries | PASS | Partially Verified |
-| Packaging: both zips build, `testzip` clean, single top-level `SecretsGPS/` folder, each zip excludes the other client's TOC + data | PASS | Partially Verified |
+| Packaging: both zips build, `testzip` clean, single top-level `SecretGPS/` folder, each zip excludes the other client's TOC + data | PASS | Partially Verified |
 | In-game run — Retail client | NOT RUN — SEAN's test owed | **Unverified** |
 | In-game run — Forever client | Cannot run until Forever launches Nov 4, 2026 (beta ended Oct 21) | **Unverified** |
 | SavedVariables persistence across a real relog | Mocked only | **Unverified** |
@@ -66,3 +66,20 @@ Gate history: the first full gate run FAILED on a harness assertion
 mock reports complete — the addon correctly treats flagged steps as
 game-owned). The harness was fixed to tick an unflagged step; the
 addon code was not changed. Gate then passed in full.
+
+## v0.5.0 — rename to SecretGPS (2026-10-23)
+
+Renamed SecretsGPS → SecretGPS at SEAN's direction: addon folder,
+both TOCs, chat prefix, SavedVariables (`SecretGPSDB` →
+`SecretGPSDB`), zip names, all documentation, and the GitHub
+repository. (Earlier sections of this document were updated to the
+current name in the same sweep; their version labels are unchanged.)
+No catalog or feature changes.
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (luaparser parse of all Lua files, TOC↔disk cross-check, entry counts, duplicate-ID check, LFH 110-point count, Library Books 37 count, mapID audit) | PASS | Partially Verified |
+| Mocked-frame harness, both TOCs (boot, every entry selects/refreshes, native + TomTom waypoint paths, tracker start/stop/advance/flag-skip, slash commands incl. `/secretgps`) | PASS | Partially Verified |
+| Packaging: `SecretGPS-0.5.0-Retail.zip` + `SecretGPS-0.5.0-Forever.zip` build from the TOC-derived lists, contents == TOC lists, single top-level `SecretGPS/` folder | PASS | Partially Verified |
+| Zero `SecretsGPS` strings remain outside git history and the CHANGELOG's historical entries | PASS (grep) | Partially Verified |
+| In-game run — both clients | NOT RUN (unchanged from v0.4.0) | **Unverified** |
