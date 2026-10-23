@@ -96,3 +96,23 @@ No catalog or feature changes.
 | Packaging: `SecretGPS-0.5.0-Retail.zip` + `SecretGPS-0.5.0-Forever.zip` build from the TOC-derived lists, contents == TOC lists, single top-level `SecretGPS/` folder | PASS | Partially Verified |
 | Zero `SecretsGPS` strings remain outside git history and the CHANGELOG's historical entries | PASS (grep) | Partially Verified |
 | In-game run — both clients | NOT RUN (unchanged from v0.4.0) | **Unverified** |
+
+## v0.6.1 — review series release (2026-10-23)
+
+Ships the one-at-a-time review series (A1–A10) plus SEAN's R1
+direction (all windows styled like the classic quest log):
+layout/tooltip fixes, mouse-wheel scrolling, selection highlight,
+Type dropdown with counts, step-text search, quest-update debounce,
+tracker advance-while-hidden, minimap button, tracker progress bar
++ completion sound, collected-detection engine (no journal IDs
+yet), SavedVariables versioning, and gate schema validation (which
+caught and fixed the Housing label and Wan'be expansion-key bugs).
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (parse, TOC cross-check, entry counts, duplicate IDs, LFH/Books counts, mapID audit, entry/step schema incl. collection field, 4-way version consistency) | PASS | Partially Verified |
+| Harness, both TOCs (boot, select-all, waypoints native+TomTom, tracker incl. flag-skip, slash, **type filter / step-text search / hide-solved assertions**, **minimap button exists, has click+drag handlers, and toggles the catalog both ways**) | PASS | Partially Verified |
+| Packaging: v0.6.1 Retail (57,931 B) + Forever (29,104 B) zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub publish: per-file upserts OK; full-tree blob audit | ALL MATCH | Verified |
+| GitHub pre-release v0.6.1 with both zips attached | Published, page read back | Verified |
+| In-game — v0.6.1 changes (parchment tiles, minimap button, dropdown, wheel, sound) | NOT RUN — awaits SEAN's walkthrough (v0.6.0 load/render verified in Retail 2026-10-23) | **Unverified** |
