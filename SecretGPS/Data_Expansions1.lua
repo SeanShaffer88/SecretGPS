@@ -108,6 +108,7 @@ Add({
 
 Add({
   id = "terky", name = "Terky", type = "pet",
+  collection = { kind = "pet", id = 1073 },
   expansion = "wod", game = "retail", zone = "Borean Tundra",
   reward = "Terky pet", mindSeeker = false,
   solo = "Solo", difficulty = 1, estTime = "Minutes once known",
@@ -425,6 +426,7 @@ Add({
 
 Add({
   id = "wicker-pup", name = "Wicker Pup", type = "pet",
+  collection = { kind = "pet", id = 2411 },
   expansion = "bfa", game = "retail", zone = "Drustvar",
   reward = "Wicker Pup pet", mindSeeker = true,
   solo = "Solo", difficulty = 2, estTime = "~20m",
@@ -442,6 +444,7 @@ Add({
 
 Add({
   id = "bumbles", name = "Bumbles", type = "pet",
+  collection = { kind = "pet", id = 2442 },
   expansion = "bfa", game = "retail", zone = "Stormsong Valley / Boralus",
   reward = "Bumbles pet", mindSeeker = false,
   solo = "Solo", difficulty = 2, estTime = "7 days of feeding (plus questline)",
