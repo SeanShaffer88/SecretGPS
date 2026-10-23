@@ -82,11 +82,15 @@ short version see `README.md`; for store-listing copy see
   all 33 secret records are cataloged in v0.6.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
-## Interface (v0.6.1)
+## Interface (v0.6.2)
 
-- **Classic quest log styling**: both windows are parchment book
-  pages with ink-brown text, in the style of the classic quest log.
-- **Minimap button**: quest-log book icon on the minimap —
+- **Classic quest log styling**: dark frames, a black list panel
+  with gold titles, and parchment reading panels with ink-brown
+  text, in the style of the classic quest log. (v0.6.1 built the
+  look from the original book-tile art; live screenshots showed it
+  does not tile at these window sizes, so v0.6.2 builds the same
+  look from backdrop colors.)
+- **Minimap button**: book icon on the minimap —
   left-click toggles the catalog, right-click toggles the tracker,
   drag to reposition (position saved).
 - **Tooltips everywhere**, mouse-wheel scrolling in both lists, a
