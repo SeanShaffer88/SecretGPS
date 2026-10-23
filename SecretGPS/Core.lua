@@ -6,7 +6,7 @@
 -- navigation and checklist display only.
 local ADDON, ns = ...
 
-ns.VERSION = "0.6.4"
+ns.VERSION = "0.6.5"
 ns.Entries = ns.Entries or {}
 ns.ById = {}
 
@@ -99,6 +99,7 @@ local function EnsureDB()
     if type(db.manualComplete) ~= "table" then db.manualComplete = {} end
     if type(db.settings) ~= "table" then db.settings = {} end
     if db.settings.wpProvider == nil then db.settings.wpProvider = "auto" end
+    if type(db.settings.textScale) ~= "number" then db.settings.textScale = 1.2 end
     if type(db.tracked) ~= "table" then db.tracked = nil end
     if db.hideCompleted == nil then db.hideCompleted = false end
     if db.typeFilter == nil then db.typeFilter = "all" end
@@ -156,6 +157,8 @@ local function SlashHandler(msg)
                 (ns.TomTomAvailable() and " (TomTom detected)" or " (TomTom not detected)") ..
                 " - change with /sgps wp auto|native|tomtom")
         end
+    elseif cmd == "text" then
+        if ns.UI and ns.UI.CycleTextScale then ns.UI.CycleTextScale() end
     elseif cmd == "mindseeker" or cmd == "ms" then
         if ns.MindSeekerSummary then Print(ns.MindSeekerSummary()) end
     elseif cmd == "reset" then
@@ -165,7 +168,7 @@ local function SlashHandler(msg)
         Print("manual progress cleared (quest-flag progress is read from the game and is unaffected).")
         if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
     elseif cmd == "help" then
-        Print("Commands: /sgps - toggle catalog | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
+        Print("Commands: /sgps - toggle catalog | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
     else
         if ns.UI and ns.UI.Toggle then ns.UI.Toggle() end
     end
