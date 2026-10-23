@@ -14,7 +14,7 @@ See also: `FEATURES.md` (the full feature list), `DESCRIPTION.md` (store-listing
 - **Waypoints** — steps with published coordinates get a map pin in one click: through **TomTom** if you have it installed, otherwise Blizzard's native waypoint — your choice (`/sgps wp auto|native|tomtom`). Steps without a verified map ID print a copyable `/way` line instead.
 - **Progress that knows** — steps tied to hidden quest flags are checked against the game itself, so a step you finished months ago is already ticked. Anything else can be ticked manually, and progress is saved between sessions.
 - **Mind-Seeker tracker** — the catalog tracks the secrets that count toward the Mind-Seeker Feat of Strength and shows how close you are to the 17-of-34 needed for the title.
-- **Looks the part** — both windows are styled after the classic quest log (parchment pages, ink text), and a quest-log book button lives on your minimap: left-click for the catalog, right-click for the tracker, drag to move it.
+- **Looks the part** — both windows are styled after the classic quest log: a dark frame, a black list panel with gold titles, and parchment guide pages with ink text. A book button lives on your minimap: left-click for the catalog, right-click for the tracker, drag to move it.
 
 ## The catalog (114 secrets)
 
@@ -41,7 +41,7 @@ Unzip so the `SecretGPS` folder sits in your client's `Interface/AddOns/` folder
 
 ## Honest limits
 
-- v0.6.1 is a pre-release build for in-game testing. Retail data is transcribed from community guides (chiefly Warcraft Secrets, the Secret Finding community's guide site, plus Wowhead, Icy Veins, Method and Lost WOW) and verified against patch 12.1.5 documentation. The addon itself has been run in the live Retail client — loading and catalog rendering are verified (2026-10-23) — but not every entry has been walked end-to-end in game, and the v0.6.1 interface changes await a full walkthrough.
+- v0.6.2 is a pre-release build for in-game testing. Retail data is transcribed from community guides (chiefly Warcraft Secrets, the Secret Finding community's guide site, plus Wowhead, Icy Veins, Method and Lost WOW) and verified against patch 12.1.5 documentation. The addon itself has been run in the live Retail client — loading and catalog rendering are verified (2026-10-23) — but not every entry has been walked end-to-end in game, and the v0.6.2 interface changes await a full walkthrough.
 - Renamed from SecretAtlas in v0.4.0, and to SecretGPS in v0.5.0. The SavedVariables store was renamed each time, so any progress from earlier test builds resets once on upgrade.
 - WoW: Forever entries come from the Forever beta and must be re-verified on the live client after its November 4, 2026 launch.
 - A few entries are still summaries where full community steps could not be extracted (some Midnight pets and a handful of older pets/toys). Those entries say so in their steps rather than guessing. The four v0.2 summary mount entries (Nazjatar Blood Serpent, Child of Torcali, Bound Shadehound, Xy Trustee's Gearglider) and the Library Books locations were completed in v0.3.0 from Warcraft Secrets, Icy Veins, Blizzard Watch, Method and Lost WOW guides.
