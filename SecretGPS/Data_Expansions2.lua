@@ -107,6 +107,7 @@ Add({
 
 Add({
   id = "enlightened-hearthstone", name = "Enlightened Hearthstone", type = "toy",
+  collection = { kind = "toy", id = 190196 },
   expansion = "shadowlands", game = "retail", zone = "Zereth Mortis",
   reward = "Enlightened Hearthstone toy", mindSeeker = true,
   solo = "Group: 6 players with the Sphere toy (anyone nearby can loot once the portal opens)", difficulty = 3, estTime = "~20 min once a group is formed",
@@ -279,6 +280,7 @@ Add({
 
 Add({
   id = "lost-obsidian-cache", name = "Lost Obsidian Cache: Black Dragon's Challenge Dummy", type = "toy",
+  collection = { kind = "toy", id = 201933 },
   expansion = "dragonflight", game = "retail", zone = "Waking Shores",
   reward = "Black Dragon's Challenge Dummy toy", mindSeeker = true,
   solo = "Solo", difficulty = 3, estTime = "See guide",
