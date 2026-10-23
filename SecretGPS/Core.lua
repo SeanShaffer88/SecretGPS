@@ -6,7 +6,7 @@
 -- navigation and checklist display only.
 local ADDON, ns = ...
 
-ns.VERSION = "0.6.1"
+ns.VERSION = "0.6.2"
 ns.Entries = ns.Entries or {}
 ns.ById = {}
 
@@ -27,44 +27,48 @@ local function BuildIndex()
 end
 ns.BuildIndex = BuildIndex
 
--- Shared window styling: every SecretGPS window wears the classic
--- quest log look (SEAN's direction, 2026-10-23) - a parchment page
--- built from the original QuestLogFrame book tiles over a plain
--- parchment layer, so a tile a client lacks degrades to parchment,
--- never to a broken window. Tile names follow Blizzard's tile
--- naming; bottom tiles try "Bot*" then "Bottom*" (SetTexture
--- reports failure as false on modern clients).
-local QL = "Interface\\QuestFrame\\UI-QuestLog-"
-function ns.StyleQuestLog(frame, tileW, tileH)
-    if not frame or not frame.CreateTexture then return end
-    local base = frame:CreateTexture(nil, "BACKGROUND")
-    base:SetAllPoints(frame)
-    base:SetColorTexture(0.93, 0.86, 0.68, 1)
-    local function tile(names)
-        local t = frame:CreateTexture(nil, "ARTWORK")
-        for i = 1, #names do
-            if t:SetTexture(QL .. names[i]) ~= false then break end
-        end
-        return t
+-- Shared window styling (SEAN's direction, 2026-10-23): every
+-- SecretGPS window wears the classic quest log look - a dark frame,
+-- a black list panel with gold titles, and parchment reading panels
+-- with ink text, matching the reference frame SEAN supplied.
+-- v0.6.1 built the parchment from the original QuestLogFrame book
+-- tiles; SEAN's live screenshots showed that art does not tile at
+-- these window sizes on the current client (black slabs on the
+-- right edge, a giant emblem over the title, ink text unreadable
+-- where a tile sat under it), so v0.6.2 builds the same look from
+-- backdrop colors instead - no legacy art files involved.
+-- CONTRACT: pass only frames created with BackdropTemplate (plain
+-- frames have no SetBackdrop on modern Mainline / Forever); the
+-- SetBackdrop presence check below enforces it at runtime.
+function ns.StyleQuestLog(frame)
+    if not frame or not frame.SetBackdrop then return end
+    frame:SetBackdrop({
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true, tileSize = 16, edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 },
+    })
+    frame:SetBackdropColor(0.08, 0.065, 0.05, 0.97)
+    frame:SetBackdropBorderColor(0.5, 0.4, 0.22, 1)
+end
+
+-- Inset panel in the same look: parchment (reading surfaces) or
+-- black (list surfaces). Same BackdropTemplate contract as above.
+function ns.StylePanel(frame, parchment)
+    if not frame or not frame.SetBackdrop then return end
+    frame:SetBackdrop({
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true, tileSize = 16, edgeSize = 12,
+        insets = { left = 3, right = 3, top = 3, bottom = 3 },
+    })
+    if parchment then
+        frame:SetBackdropColor(0.93, 0.86, 0.68, 1)
+        frame:SetBackdropBorderColor(0.4, 0.26, 0.1, 1)
+    else
+        frame:SetBackdropColor(0, 0, 0, 0.6)
+        frame:SetBackdropBorderColor(0.35, 0.3, 0.22, 1)
     end
-    local tl = tile({ "TopLeft" })
-    tl:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
-    tl:SetSize(tileW, tileH)
-    local tr = tile({ "TopRight" })
-    tr:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
-    tr:SetSize(tileW, tileH)
-    local tm = tile({ "TopMiddle" })
-    tm:SetPoint("TOPLEFT", tl, "TOPRIGHT", 0, 0)
-    tm:SetPoint("BOTTOMRIGHT", tr, "BOTTOMLEFT", 0, 0)
-    local bl = tile({ "BotLeft", "BottomLeft" })
-    bl:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
-    bl:SetSize(tileW, tileH)
-    local br = tile({ "BotRight", "BottomRight" })
-    br:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
-    br:SetSize(tileW, tileH)
-    local bm = tile({ "BotMiddle", "BottomMiddle" })
-    bm:SetPoint("BOTTOMLEFT", bl, "BOTTOMRIGHT", 0, 0)
-    bm:SetPoint("TOPRIGHT", br, "TOPLEFT", 0, 0)
 end
 
 -- SavedVariables schema version (A9). Bump DB_VERSION when the
