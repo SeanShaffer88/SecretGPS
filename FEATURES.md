@@ -82,6 +82,18 @@ short version see `README.md`; for store-listing copy see
   all 33 secret records are cataloged in v0.6.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
+## Interface (v0.6.1)
+
+- **Classic quest log styling**: both windows are parchment book
+  pages with ink-brown text, in the style of the classic quest log.
+- **Minimap button**: quest-log book icon on the minimap —
+  left-click toggles the catalog, right-click toggles the tracker,
+  drag to reposition (position saved).
+- **Tooltips everywhere**, mouse-wheel scrolling in both lists, a
+  highlighted selected row, and a Type dropdown menu with counts.
+- **SecretTracker progress bar** and a completion sound, and the
+  tracker advances its saved step even while hidden.
+
 ## Commands
 
 - `/sgps` or `/secretgps` (or `/sa`) — open/close the catalog
@@ -105,10 +117,14 @@ short version see `README.md`; for store-listing copy see
 
 ## Not in this version
 
-- Automatic "already collected" detection from the mount/pet/toy
-  journals (progress today is quest flags + manual ticks).
-- A minimap button and 3D reward previews.
-- In-game verification: v0.5.0 is a pre-release build. Retail data
-  is transcribed from community guides and the Forever data from
-  the beta; both await live-client walkthroughs (Forever launches
-  November 4, 2026).
+- Per-entry journal IDs for the collected detection above (the
+  engine ships in v0.6.1; the IDs are being sourced from the
+  journals' publishers and land in a data update — until then
+  progress is quest flags + manual ticks).
+- 3D reward previews.
+- In-game verification: v0.6.1 is a pre-release build. Retail load
+  and catalog rendering were verified in the live client on
+  2026-10-23; the v0.6.1 interface changes and all interaction
+  paths await a live walkthrough, and the Forever data (from the
+  beta) awaits the live client (Forever launches November 4,
+  2026).
