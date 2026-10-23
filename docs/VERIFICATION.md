@@ -143,3 +143,26 @@ space; version bumped to 0.6.2 in all four places.
 | GitHub publish: per-file upserts OK; full-tree blob audit (29 files) | ALL MATCH | Verified |
 | GitHub pre-release v0.6.2 with both zips attached | Published, page read back | Verified |
 | In-game — v0.6.2 look (dark frame, panels, minimap book icon) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
+
+## v0.6.3 — second look fix (2026-10-23)
+
+SEAN's live v0.6.2 screenshot VERIFIED the restyle's main lines
+(dark frame, black list with gold titles, red buttons, footer
+separation, title emblem all render as intended) and exposed two
+defects: (1) the detail title + meta render as faint ghosts and
+the parchment reads grey — the panels used UI-Tooltip-Background,
+a grey TRANSLUCENT texture, veiling the window-frame fontstrings
+drawn under the panel child frames; (2) the minimap button still
+reads as an empty ring — the book icon was drawn UNDER the
+tracking-border texture. Fixes: all backdrops use opaque WHITE8x8;
+detail title/meta parented to the detail panel; tracker step/zone
+texts parented to the step panel; QuestTitleFont experiment
+reverted; minimap icon moved to OVERLAY above the ring (24px),
+ring to BACKGROUND, radius derived from the minimap's width.
+
+| Check | Result | Label |
+|---|---|---|
+| Gate (4-way version consistency 0.6.3) | PASS (exit 0) | Partially Verified |
+| Harness, both TOCs (incl. minimap assertions) | PASS | Partially Verified |
+| Packaging: v0.6.3 Retail (59,220 B) + Forever (30,242 B) zips, contents == TOC lists | PASS | Partially Verified |
+| In-game — v0.6.3 (opaque parchment + dark title/meta, minimap book inside ring, tracker panel texts) | NOT RUN — awaits SEAN's next screenshot | **Unverified** |
