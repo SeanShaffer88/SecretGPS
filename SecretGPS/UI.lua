@@ -151,7 +151,7 @@ function UI.Refresh()
             if e then
                 local done, total = ns.EntryStepProgress(e)
                 local mark = ns.IsEntrySolved(e) and "|cff7dff7d[done]|r " or ""
-                local tmark = (ns.db and ns.db.tracked and ns.db.tracked.id == e.id) and "|cffe5484d>> |r" or ""
+                local tmark = (ns.cdb and ns.cdb.tracked and ns.cdb.tracked.id == e.id) and "|cffe5484d>> |r" or ""
                 row.text:SetText(tmark .. mark .. tostring(e.name))
                 row.sub:SetText(EntryTypeLabel(e) .. " - " ..
                     (EXPANSION_LABELS[e.expansion] or "") .. "  " .. done .. "/" .. total)
@@ -209,7 +209,7 @@ function UI.Refresh()
         end
     end
     if UI.trackBtn then
-        if e and ns.db and ns.db.tracked and ns.db.tracked.id == e.id then
+        if e and ns.cdb and ns.cdb.tracked and ns.cdb.tracked.id == e.id then
             UI.trackBtn:SetText("Open tracker")
         else
             UI.trackBtn:SetText("Track this secret")
@@ -709,7 +709,7 @@ function UI.Build()
     trackBtn:SetScript("OnClick", function()
         local e = SelectedEntry()
         if e and ns.Tracker then
-            if ns.db and ns.db.tracked and ns.db.tracked.id == e.id then
+            if ns.cdb and ns.cdb.tracked and ns.cdb.tracked.id == e.id then
                 ns.Tracker.Toggle()
             else
                 ns.Tracker.Start(e)

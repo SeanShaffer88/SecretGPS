@@ -81,30 +81,65 @@ end
 -- saved shape changes and add the migration step in MigrateDB; a
 -- save written by a NEWER version is left untouched, never
 -- downgraded or re-stamped.
-local DB_VERSION = 1
+local DB_VERSION = 2
 local function MigrateDB(db)
     local v = db.version
     if type(v) ~= "number" then v = 0 end
     if v > DB_VERSION then return end
     -- v0 -> v1: the first versioned shape is the shape EnsureDB's
     -- defaults already produce, so this step is only the stamp.
-    -- Future steps transform the data between the stamp updates.
+    -- v1 -> v2: manual ticks and the tracked secret become
+    -- per-character (SecretGPSCharDB). The account-wide copies are
+    -- parked in legacyChar and seed each character's store the first
+    -- time that character logs in, so no one loses progress.
+    if v < 2 then
+        if type(db.manualSteps) == "table" or type(db.manualComplete) == "table" then
+            db.legacyChar = {
+                manualSteps = type(db.manualSteps) == "table" and db.manualSteps or {},
+                manualComplete = type(db.manualComplete) == "table" and db.manualComplete or {},
+                tracked = type(db.tracked) == "table" and db.tracked or nil,
+            }
+        end
+        db.manualSteps, db.manualComplete, db.tracked = nil, nil, nil
+    end
     db.version = DB_VERSION
+end
+
+local function CopyTable(t)
+    if type(t) ~= "table" then return t end
+    local out = {}
+    for k, v in pairs(t) do out[k] = CopyTable(v) end
+    return out
 end
 
 local function EnsureDB()
     if type(SecretGPSDB) ~= "table" then SecretGPSDB = {} end
     local db = SecretGPSDB
-    if type(db.manualSteps) ~= "table" then db.manualSteps = {} end
-    if type(db.manualComplete) ~= "table" then db.manualComplete = {} end
     if type(db.settings) ~= "table" then db.settings = {} end
     if db.settings.wpProvider == nil then db.settings.wpProvider = "auto" end
     if type(db.settings.textScale) ~= "number" then db.settings.textScale = 1.2 end
-    if type(db.tracked) ~= "table" then db.tracked = nil end
     if db.hideCompleted == nil then db.hideCompleted = false end
     if db.typeFilter == nil then db.typeFilter = "all" end
     MigrateDB(db)
     ns.db = db
+    -- Per-character store: manual step ticks, whole-secret ticks and
+    -- the tracked secret (quest flags and collections are already
+    -- per character / per account in the game itself).
+    if type(SecretGPSCharDB) ~= "table" then SecretGPSCharDB = {} end
+    local cdb = SecretGPSCharDB
+    if not cdb.seeded then
+        local legacy = db.legacyChar
+        if type(legacy) == "table" then
+            cdb.manualSteps = CopyTable(legacy.manualSteps)
+            cdb.manualComplete = CopyTable(legacy.manualComplete)
+            cdb.tracked = CopyTable(legacy.tracked)
+        end
+        cdb.seeded = true
+    end
+    if type(cdb.manualSteps) ~= "table" then cdb.manualSteps = {} end
+    if type(cdb.manualComplete) ~= "table" then cdb.manualComplete = {} end
+    if type(cdb.tracked) ~= "table" then cdb.tracked = nil end
+    ns.cdb = cdb
 end
 ns.EnsureDB = EnsureDB
 
@@ -167,8 +202,8 @@ local function SlashHandler(msg)
         if ns.MindSeekerSummary then Print(ns.MindSeekerSummary()) end
     elseif cmd == "reset" then
         EnsureDB()
-        ns.db.manualSteps = {}
-        ns.db.manualComplete = {}
+        ns.cdb.manualSteps = {}
+        ns.cdb.manualComplete = {}
         Print("manual progress cleared (quest-flag progress is read from the game and is unaffected).")
         if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
     elseif cmd == "help" then

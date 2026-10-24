@@ -5,7 +5,7 @@
 -- (TomTom or native, per the waypoint provider setting), advances
 -- when a step is done - automatically for quest-flag steps, via the
 -- Done button for manual ones - and announces completion.
--- Tracking state persists in SavedVariables (ns.db.tracked).
+-- Tracking state persists in SavedVariables (ns.cdb.tracked).
 local _, ns = ...
 
 local Tracker = {}
@@ -15,7 +15,7 @@ local frame, nameFS, countFS, stepFS, zoneFS, doneBtn, barFill
 local soundPlayedFor -- entry id the completion sound already played for
 
 local function Current()
-    local t = ns.db and ns.db.tracked
+    local t = ns.cdb and ns.cdb.tracked
     if not t or not t.id then return nil end
     local e = ns.ById and ns.ById[t.id]
     if not e then return nil end
@@ -204,7 +204,7 @@ end
 local function GotoStep(idx, setWay)
     local e = Current()
     if not e then return end
-    ns.db.tracked.step = idx
+    ns.cdb.tracked.step = idx
     Build()
     frame:Show()
     Tracker.Refresh()
@@ -221,9 +221,9 @@ function Tracker.Start(entry, stepIdx)
         ns.Print("That secret has no steps to track.")
         return
     end
-    if not ns.db then return end
+    if not ns.cdb then return end
     local idx = stepIdx or FirstUndone(e, 1) or 1
-    ns.db.tracked = { id = e.id, step = idx }
+    ns.cdb.tracked = { id = e.id, step = idx }
     if ns.IsEntrySolved(e) then soundPlayedFor = e.id end -- no fanfare for review opens
     Build()
     frame:Show()
@@ -238,7 +238,7 @@ function Tracker.Start(entry, stepIdx)
 end
 
 function Tracker.Stop()
-    if ns.db then ns.db.tracked = nil end
+    if ns.cdb then ns.cdb.tracked = nil end
     if frame then frame:Hide() end
     ns.Print("Tracking stopped.")
     if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
@@ -325,7 +325,7 @@ function Tracker.OnQuestUpdate()
                 ns.Print("Step done - advancing your tracker.")
                 GotoStep(nxt, true)
             else
-                ns.db.tracked.step = nxt
+                ns.cdb.tracked.step = nxt
                 if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
             end
             return

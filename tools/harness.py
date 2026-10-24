@@ -116,6 +116,29 @@ end
 fire("ADDON_LOADED", "SecretGPS")
 fire("PLAYER_LOGIN")
 note("login fired")
+try("v1 save migrates ticks to per-character store, seeds each alt", function()
+    local savedA, savedC = SecretGPSDB, SecretGPSCharDB
+    SecretGPSDB = { version = 1, settings = { wpProvider = "native", textScale = 1.1 },
+        manualSteps = { ["some-id"] = { [2] = true } }, manualComplete = { ["done-id"] = true },
+        tracked = { id = "some-id", step = 2 } }
+    SecretGPSCharDB = nil
+    NS.EnsureDB()
+    assert(SecretGPSDB.version == 2, "account db not stamped v2")
+    assert(SecretGPSDB.manualSteps == nil and SecretGPSDB.tracked == nil, "account db still holds per-character fields")
+    assert(SecretGPSDB.settings.wpProvider == "native", "settings lost in migration")
+    assert(NS.cdb.manualSteps["some-id"][2] == true, "manual tick not carried to the character")
+    assert(NS.cdb.manualComplete["done-id"] == true, "manual complete not carried")
+    assert(NS.cdb.tracked and NS.cdb.tracked.step == 2, "tracked secret not carried")
+    -- a second character logging in later is seeded too, independently
+    local first = SecretGPSCharDB
+    first.manualSteps["some-id"][3] = true
+    SecretGPSCharDB = nil
+    NS.EnsureDB()
+    assert(NS.cdb.manualSteps["some-id"][2] == true, "alt not seeded")
+    assert(NS.cdb.manualSteps["some-id"][3] == nil, "alt shares the first character's ticks")
+    SecretGPSDB, SecretGPSCharDB = savedA, savedC
+    NS.EnsureDB()
+end)
 try("slash toggle open", function() SlashCmdList["SECRETSGPS"]("") end)
 try("frame shown", function() assert(SecretGPSFrame and SecretGPSFrame:IsShown(), "frame not shown") end)
 try("debug slash", function() SlashCmdList["SECRETSGPS"]("debug") end)
@@ -158,7 +181,7 @@ try("pin all remaining (TomTom) + refuses without TomTom", function()
     assert(NS.PinAllRemaining(e) == 0, "pin all ran without TomTom")
     local pins = 0
     TomTom = { AddWaypoint = function() pins = pins + 1 end }
-    NS.db.manualSteps[e.id] = nil
+    NS.cdb.manualSteps[e.id] = nil
     local want = 0
     for i = 1, #e.steps do
         local s = NS.ResolveWaypointStep(e.steps[i])
@@ -175,7 +198,7 @@ try("pin all remaining (TomTom) + refuses without TomTom", function()
         end
         pins = 0
         assert(NS.PinAllRemaining(e) == want - 1, "a ticked step was still pinned")
-        NS.db.manualSteps[e.id] = nil
+        NS.cdb.manualSteps[e.id] = nil
     end
     TomTom = saved
 end)
@@ -237,10 +260,10 @@ try("tracker start, stop", function()
         local e = NS.Entries[i]
         if e.steps and #e.steps >= 2 then
             NS.Tracker.Start(e)
-            assert(NS.db.tracked and NS.db.tracked.id == e.id, "tracked id mismatch")
+            assert(NS.cdb.tracked and NS.cdb.tracked.id == e.id, "tracked id mismatch")
             assert(SecretGPSTrackerFrame and SecretGPSTrackerFrame:IsShown(), "tracker not shown")
             NS.Tracker.Stop()
-            assert(NS.db.tracked == nil, "stop did not clear tracking")
+            assert(NS.cdb.tracked == nil, "stop did not clear tracking")
             return
         end
     end
@@ -269,8 +292,8 @@ try("tracker next on last step wraps to earlier undone step", function()
             if e.steps[j].questFlag then flagged = true end
         end
         if e.steps and #e.steps >= 3 and not flagged then
-            NS.db.manualSteps[e.id] = nil
-            NS.db.manualComplete[e.id] = nil
+            NS.cdb.manualSteps[e.id] = nil
+            NS.cdb.manualComplete[e.id] = nil
             if not NS.IsEntrySolved(e) then
                 NS.Tracker.Start(e, #e.steps)
                 NS.Tracker.Next()
@@ -278,7 +301,7 @@ try("tracker next on last step wraps to earlier undone step", function()
                 local _, idx = NS.Tracker.Current()
                 assert(idx == 1, "next on the last step did not wrap to step 1 (idx=" .. tostring(idx) .. ")")
                 NS.Tracker.Stop()
-                NS.db.manualSteps[e.id] = nil
+                NS.cdb.manualSteps[e.id] = nil
                 return
             end
         end
@@ -299,7 +322,7 @@ try("wp + track slash commands", function()
     SlashCmdList["SECRETSGPS"]("wp auto")
     SlashCmdList["SECRETSGPS"]("track")
     SlashCmdList["SECRETSGPS"]("untrack")
-    assert(NS.db.tracked == nil, "untrack slash left tracking active")
+    assert(NS.cdb.tracked == nil, "untrack slash left tracking active")
     SlashCmdList["SECRETSGPS"]("pinall")
 end)
 try("text scale cycles via slash", function()
@@ -397,8 +420,8 @@ try("learning a mount solves a tracked secret + says collected", function()
     local owned = false
     C_MountJournal = { GetMountInfoByID = function(id)
         return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, (owned and id == e.collection.id) end }
-    NS.db.manualSteps[e.id] = nil
-    NS.db.manualComplete[e.id] = nil
+    NS.cdb.manualSteps[e.id] = nil
+    NS.cdb.manualComplete[e.id] = nil
     NS.Tracker.Start(e, 1)
     assert(not NS.IsEntrySolved(e), "entry solved before the mount was learned")
     owned = true
