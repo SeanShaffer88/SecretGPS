@@ -3,7 +3,7 @@
 -- (read-only check) or when the player ticks it manually.
 -- An entry counts as solved when it is manually marked complete,
 -- or every quest flag in its completion list is done, or every
--- step is done. Manual state lives in SecretGPSDB (SavedVariables).
+-- step is done. Manual state lives in SecretGPSCharDB (per-character SavedVariables).
 local _, ns = ...
 
 local function IsQuestDone(questID)
@@ -77,7 +77,7 @@ local function IsStepDone(entry, idx)
     local step = entry.steps[idx]
     if not step then return false end
     if StepHasQuest(step) and IsQuestDone(step.questFlag) then return true end
-    local db = ns.db
+    local db = ns.cdb
     if db and db.manualSteps and db.manualSteps[entry.id] and db.manualSteps[entry.id][idx] then
         return true
     end
@@ -86,8 +86,8 @@ end
 ns.IsStepDone = IsStepDone
 
 local function ToggleStep(entry, idx)
-    if not entry or not ns.db then return end
-    local db = ns.db
+    if not entry or not ns.cdb then return end
+    local db = ns.cdb
     if type(db.manualSteps[entry.id]) ~= "table" then db.manualSteps[entry.id] = {} end
     if db.manualSteps[entry.id][idx] then
         db.manualSteps[entry.id][idx] = nil
@@ -110,7 +110,7 @@ ns.EntryStepProgress = EntryStepProgress
 
 local function IsEntrySolved(entry)
     if not entry then return false end
-    local db = ns.db
+    local db = ns.cdb
     if db and db.manualComplete and db.manualComplete[entry.id] then return true end
     if IsCollected(entry) then return true end
     if entry.completion and entry.completion.questFlags then
@@ -130,11 +130,11 @@ end
 ns.IsEntrySolved = IsEntrySolved
 
 local function ToggleEntryComplete(entry)
-    if not entry or not ns.db then return end
-    if ns.db.manualComplete[entry.id] then
-        ns.db.manualComplete[entry.id] = nil
+    if not entry or not ns.cdb then return end
+    if ns.cdb.manualComplete[entry.id] then
+        ns.cdb.manualComplete[entry.id] = nil
     else
-        ns.db.manualComplete[entry.id] = true
+        ns.cdb.manualComplete[entry.id] = true
     end
 end
 ns.ToggleEntryComplete = ToggleEntryComplete

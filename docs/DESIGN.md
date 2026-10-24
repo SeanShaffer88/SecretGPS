@@ -11,7 +11,7 @@ list, not by runtime project-ID branching.
 ## Files
 
 - `Core.lua` — namespace, SavedVariables defaults, slash commands
-  (`/sa`, `/secretgps`), login/event wiring, `/sa debug` diagnostics.
+  (`/sgps`, `/secretgps`), login/event wiring, `/sgps debug` diagnostics.
 - `Progress.lua` — quest-flag checks (`C_QuestLog.IsQuestFlaggedCompleted`,
   capability-probed with a guarded legacy fallback), manual step ticks,
   entry-solved logic, Mind-Seeker counts.

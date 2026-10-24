@@ -1,6 +1,6 @@
 # SecretGPS — Features
 
-The full feature list for the SecretGPS addon (v0.6.1). For the
+The full feature list for the SecretGPS addon (v0.6.8). For the
 short version see `README.md`; for store-listing copy see
 `DESCRIPTION.md`.
 
@@ -31,8 +31,14 @@ short version see `README.md`; for store-listing copy see
   Blizzard's native waypoint otherwise; `native` and `tomtom`
   force one or the other.
 - Steps with a published map ID and coordinates set a pin in one
-  click. Steps without a verified map ID print a copyable `/way`
-  line instead.
+  click. On Retail, steps that give only a zone name and
+  coordinates resolve through a built-in table of 41 zone map IDs
+  (each read from the game's own UiMap data); anything left prints
+  a copyable `/way` line instead.
+- **Pin all** (button, or `/sgps pinall`): with TomTom installed,
+  one click pins every unfinished step of a secret — built for the
+  long lists (110 LFH crystals, 37 library books, 28 Voidtalon
+  portal spots, 20 Beledar's Spawn points).
 - Coordinates are never invented: a step without sourced
   coordinates says so in its text.
 
@@ -45,7 +51,8 @@ short version see `README.md`; for store-listing copy see
   transmog, titles, achievements, questlines, hunter pets, druid
   forms, vendors, housing items and Forever items.
 - **Search** across names, zones, rewards and step text.
-- **Filters**: reward type, plus a hide-solved toggle.
+- **Filters**: reward type (or just the Mind-Seeker secrets), plus
+  a hide-solved toggle.
 - **Per-entry facts up front**: reward, solo/group, difficulty
   (1–5), estimated time, time gates, RNG notes, prerequisites, and
   an honest status label — solved, partly solved, **UNSOLVED**,
@@ -68,10 +75,15 @@ short version see `README.md`; for store-listing copy see
 - **Quest-flag detection**: steps tied to hidden quest flags are
   checked against the game itself, so work you finished months ago
   is already ticked when you open the entry.
+- **Collection detection**: learning a secret's mount, pet or toy
+  solves it the moment the game reports it, and the tracker says
+  so ("reward already collected") rather than claiming every step
+  was walked.
 - **Manual ticks** for everything else, with per-entry solved
   state derived from its steps.
-- Progress **persists between sessions** (SavedVariables), per
-  character.
+- Manual ticks and the tracked secret are saved **per character**
+  (since v0.6.8; settings stay account-wide). Upgrading seeds every
+  character once from the old shared ticks, so nothing is lost.
 - `/sgps reset` clears manual ticks only — game-recorded progress
   is never touched.
 
@@ -82,7 +94,7 @@ short version see `README.md`; for store-listing copy see
   all 33 secret records are cataloged in v0.6.0.
 - `/sgps mindseeker` prints your solved/total counts at any time.
 
-## Interface (v0.6.6)
+## Interface (v0.6.8)
 
 - **Classic quest log styling**: dark frames, a black list panel
   with gold titles, and parchment reading panels with ink-brown
@@ -100,10 +112,12 @@ short version see `README.md`; for store-listing copy see
 
 ## Commands
 
-- `/sgps` or `/secretgps` (or `/sa`) — open/close the catalog
+- `/sgps` or `/secretgps` — open the catalog (`/sgps close`, Esc or the X button close it)
 - `/sgps track` — show/hide the SecretTracker window
 - `/sgps untrack` — stop tracking
 - `/sgps wp auto|native|tomtom` — waypoint provider
+- `/sgps pinall` — TomTom pins for every unfinished step
+- `/sgps text` — cycle text size (100–145%)
 - `/sgps mindseeker` — print Mind-Seeker progress
 - `/sgps debug` — version, entry count, API availability diagnostics
 - `/sgps reset` — clear manual ticks
@@ -126,7 +140,7 @@ short version see `README.md`; for store-listing copy see
   and mounts are covered as of v0.6.4; the rest still use quest
   flags + manual ticks.
 - 3D reward previews.
-- In-game verification: v0.6.4 is a pre-release build. Retail load
+- In-game verification: v0.6.8 is a pre-release build. Retail load
   and catalog rendering were verified in the live client on
   2026-10-23 (v0.6.0–v0.6.2 screenshots); the v0.6.3 look fixes
   and the v0.6.4 collection detection await a live walkthrough,

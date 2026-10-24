@@ -11,6 +11,48 @@
 -- AddWaypoint API when TomTom is already installed.
 local _, ns = ...
 
+-- Zone name -> uiMapID for Retail steps that carry coordinates but
+-- no mapID of their own, so they still get a one-click pin. Every
+-- ID is the primary Retail zone row of the game's UiMap table
+-- (wago.tools DB2 export, 2026-10-23); ambiguous names (Eversong
+-- Woods, Uldum) are left out on purpose. Retail only: the Forever
+-- client's map IDs differ, so its steps keep the /way fallback.
+-- The gate audits these IDs like any data-file mapID.
+local ZONE_MAPS = {
+    ["Abyssal Depths"] = 204, ["Ardenweald"] = 1565, ["Ashenvale"] = 63,
+    ["Azj-Kahet"] = 2255, ["Azsuna"] = 630, ["Borean Tundra"] = 114,
+    ["Boralus"] = 1161, ["Broken Shore"] = 646, ["City of Threads"] = 2213,
+    ["Dazar'alor"] = 1165, ["Deadwind Pass"] = 42, ["Deepholm"] = 207,
+    ["Dornogal"] = 2339, ["Drustvar"] = 896, ["Elwynn Forest"] = 37,
+    ["Hallowfall"] = 2215, ["Highmountain"] = 650, ["Krokuun"] = 830,
+    ["Kun-Lai Summit"] = 379, ["Maldraxxus"] = 1536, ["Nagrand (Outland)"] = 107,
+    ["Nazjatar"] = 1355, ["Nazmir"] = 863, ["Northern Stranglethorn"] = 50,
+    ["Shimmering Expanse"] = 205, ["Stormheim"] = 634, ["Stormsong Valley"] = 942,
+    ["Suramar"] = 680, ["Thaldraszus"] = 2025, ["The Maw"] = 1543,
+    ["The Storm Peaks"] = 120, ["Tiragarde Sound"] = 895, ["Undermine"] = 2346,
+    ["Val'sharah"] = 641, ["Vol'dun"] = 864, ["Waking Shores"] = 2022,
+    ["Westfall"] = 52, ["Winterspring"] = 83, ["Zangarmarsh"] = 102,
+    ["Zereth Mortis"] = 1970, ["Zuldazar"] = 862,
+}
+
+-- Each TOC loads only its own game's catalog, so the first entry
+-- tells which client this is.
+local function IsRetailCatalog()
+    local e = ns.Entries and ns.Entries[1]
+    return e and e.game == "retail" or false
+end
+
+-- The step as a waypoint target: its own mapID when it has one,
+-- otherwise the Retail zone table's. Returns nil without coordinates.
+local function Resolve(step)
+    if not step or not step.x or not step.y then return nil end
+    if step.mapID then return step end
+    local id = IsRetailCatalog() and ZONE_MAPS[step.zone or ""]
+    if not id then return step end
+    return { mapID = id, x = step.x, y = step.y, zone = step.zone, text = step.text }
+end
+ns.ResolveWaypointStep = Resolve
+
 local function WayString(step)
     if not step or not step.x or not step.y then return nil end
     if step.mapID then
@@ -75,6 +117,7 @@ local function SetWaypoint(step, entryName)
         ns.Print("This step has no published coordinates in its source guide.")
         return false
     end
+    step = Resolve(step)
     if step.mapID then
         local provider = Provider()
         if provider == "tomtom" or (provider == "auto" and TomTomAvailable()) then
@@ -96,3 +139,40 @@ local function SetWaypoint(step, entryName)
     return false
 end
 ns.SetWaypoint = SetWaypoint
+
+-- Queue a TomTom waypoint for every unfinished step that can be
+-- pinned (long lists: the 110 LFH crystals, 37 library books, 28
+-- Voidtalon portal spots). Blizzard's native waypoint holds one pin
+-- at a time, so this needs TomTom. Returns the number queued.
+function ns.PinAllRemaining(entry)
+    if not entry or not entry.steps then return 0 end
+    if not TomTomAvailable() then
+        ns.Print("Pin all needs TomTom - Blizzard's map holds only one waypoint at a time. Use WP on a single step instead.")
+        return 0
+    end
+    local n, skipped = 0, 0
+    for i = 1, #entry.steps do
+        if not (ns.IsStepDone and ns.IsStepDone(entry, i)) then
+            local s = Resolve(entry.steps[i])
+            if s and s.mapID then
+                local ok = pcall(function()
+                    TomTom:AddWaypoint(s.mapID, s.x / 100, s.y / 100, {
+                        title = tostring(entry.name) .. " - step " .. i,
+                        from = "SecretGPS",
+                        persistent = false,
+                    })
+                end)
+                if ok then n = n + 1 else skipped = skipped + 1 end
+            elseif s then
+                skipped = skipped + 1
+            end
+        end
+    end
+    if n == 0 then
+        ns.Print("No unfinished steps of " .. tostring(entry.name) .. " can be pinned.")
+    else
+        ns.Print("Pinned " .. n .. " unfinished step(s) of " .. tostring(entry.name) .. " in TomTom" ..
+            (skipped > 0 and (" (" .. skipped .. " without a map ID - use their /way lines)") or "") .. ".")
+    end
+    return n
+end

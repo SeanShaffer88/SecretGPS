@@ -116,6 +116,29 @@ end
 fire("ADDON_LOADED", "SecretGPS")
 fire("PLAYER_LOGIN")
 note("login fired")
+try("v1 save migrates ticks to per-character store, seeds each alt", function()
+    local savedA, savedC = SecretGPSDB, SecretGPSCharDB
+    SecretGPSDB = { version = 1, settings = { wpProvider = "native", textScale = 1.1 },
+        manualSteps = { ["some-id"] = { [2] = true } }, manualComplete = { ["done-id"] = true },
+        tracked = { id = "some-id", step = 2 } }
+    SecretGPSCharDB = nil
+    NS.EnsureDB()
+    assert(SecretGPSDB.version == 2, "account db not stamped v2")
+    assert(SecretGPSDB.manualSteps == nil and SecretGPSDB.tracked == nil, "account db still holds per-character fields")
+    assert(SecretGPSDB.settings.wpProvider == "native", "settings lost in migration")
+    assert(NS.cdb.manualSteps["some-id"][2] == true, "manual tick not carried to the character")
+    assert(NS.cdb.manualComplete["done-id"] == true, "manual complete not carried")
+    assert(NS.cdb.tracked and NS.cdb.tracked.step == 2, "tracked secret not carried")
+    -- a second character logging in later is seeded too, independently
+    local first = SecretGPSCharDB
+    first.manualSteps["some-id"][3] = true
+    SecretGPSCharDB = nil
+    NS.EnsureDB()
+    assert(NS.cdb.manualSteps["some-id"][2] == true, "alt not seeded")
+    assert(NS.cdb.manualSteps["some-id"][3] == nil, "alt shares the first character's ticks")
+    SecretGPSDB, SecretGPSCharDB = savedA, savedC
+    NS.EnsureDB()
+end)
 try("slash toggle open", function() SlashCmdList["SECRETSGPS"]("") end)
 try("frame shown", function() assert(SecretGPSFrame and SecretGPSFrame:IsShown(), "frame not shown") end)
 try("debug slash", function() SlashCmdList["SECRETSGPS"]("debug") end)
@@ -137,6 +160,47 @@ try("waypoint on a mapID step", function()
         end
     end
     note("no mapID step found (allowed only for forever toc)")
+end)
+try("zone-table pin: retail resolves, forever keeps /way", function()
+    local retail = NS.Entries[1] and NS.Entries[1].game == "retail"
+    local step = { text = "t", zone = retail and "Boralus" or "Westfall", x = 61.5, y = 83.6 }
+    WAYPOINT = nil
+    local ok = NS.SetWaypoint(step, "zone test")
+    if retail then
+        assert(ok == true and WAYPOINT and WAYPOINT.mapID == 1161,
+            "Boralus step did not pin via the zone table")
+    else
+        assert(ok == false and WAYPOINT == nil, "forever step pinned via a retail map ID")
+    end
+    assert(step.mapID == nil, "SetWaypoint mutated the data step")
+end)
+try("pin all remaining (TomTom) + refuses without TomTom", function()
+    local saved = TomTom
+    TomTom = nil
+    local e = NS.ById["voidtalon"] or NS.Entries[1]
+    assert(NS.PinAllRemaining(e) == 0, "pin all ran without TomTom")
+    local pins = 0
+    TomTom = { AddWaypoint = function() pins = pins + 1 end }
+    NS.cdb.manualSteps[e.id] = nil
+    local want = 0
+    for i = 1, #e.steps do
+        local s = NS.ResolveWaypointStep(e.steps[i])
+        if s and s.mapID and not NS.IsStepDone(e, i) then want = want + 1 end
+    end
+    local n = NS.PinAllRemaining(e)
+    assert(n == want and pins == want, "pinned " .. n .. "/" .. pins .. ", want " .. want)
+    if e.id == "voidtalon" then assert(n == 28, "voidtalon should pin its 28 portal spots, got " .. n) end
+    -- ticked steps are skipped
+    if want > 0 then
+        for i = 1, #e.steps do
+            local s = NS.ResolveWaypointStep(e.steps[i])
+            if s and s.mapID then NS.ToggleStep(e, i) break end
+        end
+        pins = 0
+        assert(NS.PinAllRemaining(e) == want - 1, "a ticked step was still pinned")
+        NS.cdb.manualSteps[e.id] = nil
+    end
+    TomTom = saved
 end)
 try("quest-flag step reads done (47826)", function()
     for i = 1, #NS.Entries do
@@ -196,10 +260,10 @@ try("tracker start, stop", function()
         local e = NS.Entries[i]
         if e.steps and #e.steps >= 2 then
             NS.Tracker.Start(e)
-            assert(NS.db.tracked and NS.db.tracked.id == e.id, "tracked id mismatch")
+            assert(NS.cdb.tracked and NS.cdb.tracked.id == e.id, "tracked id mismatch")
             assert(SecretGPSTrackerFrame and SecretGPSTrackerFrame:IsShown(), "tracker not shown")
             NS.Tracker.Stop()
-            assert(NS.db.tracked == nil, "stop did not clear tracking")
+            assert(NS.cdb.tracked == nil, "stop did not clear tracking")
             return
         end
     end
@@ -220,6 +284,30 @@ try("tracker next ticks + advances", function()
     end
     error("no suitable entry for next test")
 end)
+try("tracker next on last step wraps to earlier undone step", function()
+    for i = 1, #NS.Entries do
+        local e = NS.Entries[i]
+        local flagged = false
+        for j = 1, #(e.steps or {}) do
+            if e.steps[j].questFlag then flagged = true end
+        end
+        if e.steps and #e.steps >= 3 and not flagged then
+            NS.cdb.manualSteps[e.id] = nil
+            NS.cdb.manualComplete[e.id] = nil
+            if not NS.IsEntrySolved(e) then
+                NS.Tracker.Start(e, #e.steps)
+                NS.Tracker.Next()
+                assert(NS.IsStepDone(e, #e.steps) == true, "next did not tick the last step")
+                local _, idx = NS.Tracker.Current()
+                assert(idx == 1, "next on the last step did not wrap to step 1 (idx=" .. tostring(idx) .. ")")
+                NS.Tracker.Stop()
+                NS.cdb.manualSteps[e.id] = nil
+                return
+            end
+        end
+    end
+    error("no suitable entry for wrap test")
+end)
 try("tracker skips flag-done step (lucid)", function()
     local e = NS.ById["lucid-nightmare"]
     if not e then note("lucid not in this toc (forever) - skipped") return end
@@ -234,13 +322,33 @@ try("wp + track slash commands", function()
     SlashCmdList["SECRETSGPS"]("wp auto")
     SlashCmdList["SECRETSGPS"]("track")
     SlashCmdList["SECRETSGPS"]("untrack")
-    assert(NS.db.tracked == nil, "untrack slash left tracking active")
+    assert(NS.cdb.tracked == nil, "untrack slash left tracking active")
+    SlashCmdList["SECRETSGPS"]("pinall")
 end)
 try("text scale cycles via slash", function()
     local before = NS.db.settings.textScale
     SlashCmdList["SECRETSGPS"]("text")
     assert(NS.db.settings.textScale ~= before, "text scale did not change")
     SlashCmdList["SECRETSGPS"]("text")
+end)
+try("mind-seeker filter shows only mind-seeker secrets", function()
+    local want = 0
+    for i = 1, #NS.Entries do if NS.Entries[i].mindSeeker then want = want + 1 end end
+    NS.db.typeFilter = "mindseeker"
+    NS.UI.Refresh()
+    local seen = 0
+    for i = 1, #NS.UI.listRows do
+        local r = NS.UI.listRows[i]
+        if r and r:IsShown() and r.entryId then
+            seen = seen + 1
+            assert(NS.ById[r.entryId].mindSeeker, r.entryId .. " is not a Mind-Seeker secret")
+        end
+    end
+    -- the list pages 15 rows at a time, so a full page or all of them
+    assert(seen == math.min(want, #NS.UI.listRows), "saw " .. seen .. " rows, want " .. math.min(want, #NS.UI.listRows))
+    assert(NS.UI.typeBtn:GetText() == (want > 0 and "Type: Mind-Seeker" or NS.UI.typeBtn:GetText()), "type button label")
+    NS.db.typeFilter = "all"
+    NS.UI.Refresh()
 end)
 try("type filter narrows list", function()
     local function visibleIds()
@@ -319,7 +427,39 @@ try("hide solved + restore", function()
     assert(visibleIds()[1] == e1.id, "restore did not bring first entry back")
 end)
 try("quest-log update refresh", function() fire("QUEST_LOG_UPDATE") end)
-try("slash toggle close", function() SlashCmdList["SECRETSGPS"]("") end)
+try("learning a mount solves a tracked secret + says collected", function()
+    local e
+    for i = 1, #NS.Entries do
+        local c = NS.Entries[i].collection
+        if c and c.kind == "mount" and type(c.id) == "number" and #NS.Entries[i].steps >= 2 then
+            e = NS.Entries[i] break
+        end
+    end
+    if not e then note("no mount-collection entry in this toc - skipped") return end
+    local owned = false
+    C_MountJournal = { GetMountInfoByID = function(id)
+        return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, (owned and id == e.collection.id) end }
+    NS.cdb.manualSteps[e.id] = nil
+    NS.cdb.manualComplete[e.id] = nil
+    NS.Tracker.Start(e, 1)
+    assert(not NS.IsEntrySolved(e), "entry solved before the mount was learned")
+    owned = true
+    fire("NEW_MOUNT_ADDED", e.collection.id)
+    assert(NS.IsEntrySolved(e), "entry not solved after NEW_MOUNT_ADDED")
+    assert(tostring(NS.Tracker.lastCountText):find("collected"),
+        "tracker text does not say collected: " .. tostring(NS.Tracker.lastCountText))
+    NS.Tracker.Stop()
+    C_MountJournal = nil
+end)
+try("/sgps opens (never closes); /sgps close closes", function()
+    SlashCmdList["SECRETSGPS"]("")
+    assert(SecretGPSFrame:IsShown(), "/sgps did not open the catalog")
+    SlashCmdList["SECRETSGPS"]("")
+    assert(SecretGPSFrame:IsShown(), "/sgps closed an open catalog")
+    SlashCmdList["SECRETSGPS"]("close")
+    assert(not SecretGPSFrame:IsShown(), "/sgps close did not close")
+    assert(SLASH_SECRETSGPS3 == nil, "the /sa alias is still registered")
+end)
 try("minimap button exists + toggles catalog", function()
     local mb = _G["SecretGPSMinimapButton"]
     assert(mb, "minimap button was not created")

@@ -6,7 +6,7 @@
 -- navigation and checklist display only.
 local ADDON, ns = ...
 
-ns.VERSION = "0.6.6"
+ns.VERSION = "0.6.8"
 ns.Entries = ns.Entries or {}
 ns.ById = {}
 
@@ -81,30 +81,65 @@ end
 -- saved shape changes and add the migration step in MigrateDB; a
 -- save written by a NEWER version is left untouched, never
 -- downgraded or re-stamped.
-local DB_VERSION = 1
+local DB_VERSION = 2
 local function MigrateDB(db)
     local v = db.version
     if type(v) ~= "number" then v = 0 end
     if v > DB_VERSION then return end
     -- v0 -> v1: the first versioned shape is the shape EnsureDB's
     -- defaults already produce, so this step is only the stamp.
-    -- Future steps transform the data between the stamp updates.
+    -- v1 -> v2: manual ticks and the tracked secret become
+    -- per-character (SecretGPSCharDB). The account-wide copies are
+    -- parked in legacyChar and seed each character's store the first
+    -- time that character logs in, so no one loses progress.
+    if v < 2 then
+        if type(db.manualSteps) == "table" or type(db.manualComplete) == "table" then
+            db.legacyChar = {
+                manualSteps = type(db.manualSteps) == "table" and db.manualSteps or {},
+                manualComplete = type(db.manualComplete) == "table" and db.manualComplete or {},
+                tracked = type(db.tracked) == "table" and db.tracked or nil,
+            }
+        end
+        db.manualSteps, db.manualComplete, db.tracked = nil, nil, nil
+    end
     db.version = DB_VERSION
+end
+
+local function CopyTable(t)
+    if type(t) ~= "table" then return t end
+    local out = {}
+    for k, v in pairs(t) do out[k] = CopyTable(v) end
+    return out
 end
 
 local function EnsureDB()
     if type(SecretGPSDB) ~= "table" then SecretGPSDB = {} end
     local db = SecretGPSDB
-    if type(db.manualSteps) ~= "table" then db.manualSteps = {} end
-    if type(db.manualComplete) ~= "table" then db.manualComplete = {} end
     if type(db.settings) ~= "table" then db.settings = {} end
     if db.settings.wpProvider == nil then db.settings.wpProvider = "auto" end
     if type(db.settings.textScale) ~= "number" then db.settings.textScale = 1.2 end
-    if type(db.tracked) ~= "table" then db.tracked = nil end
     if db.hideCompleted == nil then db.hideCompleted = false end
     if db.typeFilter == nil then db.typeFilter = "all" end
     MigrateDB(db)
     ns.db = db
+    -- Per-character store: manual step ticks, whole-secret ticks and
+    -- the tracked secret (quest flags and collections are already
+    -- per character / per account in the game itself).
+    if type(SecretGPSCharDB) ~= "table" then SecretGPSCharDB = {} end
+    local cdb = SecretGPSCharDB
+    if not cdb.seeded then
+        local legacy = db.legacyChar
+        if type(legacy) == "table" then
+            cdb.manualSteps = CopyTable(legacy.manualSteps)
+            cdb.manualComplete = CopyTable(legacy.manualComplete)
+            cdb.tracked = CopyTable(legacy.tracked)
+        end
+        cdb.seeded = true
+    end
+    if type(cdb.manualSteps) ~= "table" then cdb.manualSteps = {} end
+    if type(cdb.manualComplete) ~= "table" then cdb.manualComplete = {} end
+    if type(cdb.tracked) ~= "table" then cdb.tracked = nil end
+    ns.cdb = cdb
 end
 ns.EnsureDB = EnsureDB
 
@@ -157,20 +192,26 @@ local function SlashHandler(msg)
                 (ns.TomTomAvailable() and " (TomTom detected)" or " (TomTom not detected)") ..
                 " - change with /sgps wp auto|native|tomtom")
         end
+    elseif cmd == "pinall" then
+        local e = ns.UI and ns.UI.SelectedEntry and ns.UI.SelectedEntry()
+        if not e and ns.Tracker and ns.Tracker.Current then e = ns.Tracker.Current() end
+        if e then ns.PinAllRemaining(e) else Print("Select or track a secret first.") end
     elseif cmd == "text" then
         if ns.UI and ns.UI.CycleTextScale then ns.UI.CycleTextScale() end
     elseif cmd == "mindseeker" or cmd == "ms" then
         if ns.MindSeekerSummary then Print(ns.MindSeekerSummary()) end
     elseif cmd == "reset" then
         EnsureDB()
-        ns.db.manualSteps = {}
-        ns.db.manualComplete = {}
+        ns.cdb.manualSteps = {}
+        ns.cdb.manualComplete = {}
         Print("manual progress cleared (quest-flag progress is read from the game and is unaffected).")
         if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
     elseif cmd == "help" then
-        Print("Commands: /sgps - toggle catalog | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
+        Print("Commands: /sgps - open the catalog (/sgps close, Esc or X to close) | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps pinall - TomTom pins for every unfinished step | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
+    elseif cmd == "close" then
+        if ns.UI and ns.UI.frame then ns.UI.frame:Hide() end
     else
-        if ns.UI and ns.UI.Toggle then ns.UI.Toggle() end
+        if ns.UI and ns.UI.Open then ns.UI.Open() end
     end
 end
 
@@ -200,6 +241,14 @@ local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
 loader:RegisterEvent("PLAYER_LOGIN")
 loader:RegisterEvent("QUEST_LOG_UPDATE")
+-- Learning a mount, pet or toy can solve a secret on the spot
+-- (collection detection), so these refresh exactly like a quest
+-- update. Registration is pcall-guarded: a client without one of
+-- these events errors on RegisterEvent rather than ignoring it.
+local COLLECTION_EVENTS = { NEW_MOUNT_ADDED = true, NEW_PET_ADDED = true, NEW_TOY_ADDED = true }
+for ev in pairs(COLLECTION_EVENTS) do
+    pcall(loader.RegisterEvent, loader, ev)
+end
 loader:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" and arg1 == ADDON then
         EnsureDB()
@@ -209,12 +258,11 @@ loader:SetScript("OnEvent", function(_, event, arg1)
         BuildIndex()
         SLASH_SECRETSGPS1 = "/secretgps"
         SLASH_SECRETSGPS2 = "/sgps"
-        SLASH_SECRETSGPS3 = "/sa"
         SlashCmdList["SECRETSGPS"] = SlashHandler
         if ns.UI and ns.UI.Build then ns.UI.Build() end
         if ns.Tracker and ns.Tracker.Restore then ns.Tracker.Restore() end
         Print("loaded v" .. ns.VERSION .. " - " .. #ns.Entries .. " secrets catalogued. /sgps to open.")
-    elseif event == "QUEST_LOG_UPDATE" then
+    elseif event == "QUEST_LOG_UPDATE" or COLLECTION_EVENTS[event] then
         if ns.Tracker and ns.Tracker.OnQuestUpdate then ns.Tracker.OnQuestUpdate() end
         RefreshCatalogSoon()
     end

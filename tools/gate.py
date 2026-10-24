@@ -116,6 +116,13 @@ def schema_failures():
         print(f"schema ({game}): {len(ns.Entries)} entries, "
               f"{len(problems)} problem(s)")
         out += [f"schema {game}: {p}" for p in problems]
+        # Data_Retail_Fixes.lua records any Fix(id) that matched no
+        # entry - a renamed or misspelled id would otherwise make the
+        # correction a silent no-op.
+        misses = ns.FixMisses
+        missed = [misses[i] for i in range(1, len(misses) + 1)] if misses else []
+        print(f"fixes ({game}): {len(missed)} unmatched id(s)")
+        out += [f"fixes {game}: Fix('{m}') matches no entry" for m in missed]
     return out
 
 
@@ -189,11 +196,28 @@ def main():
     allowed = {"13", "46", "885", "895", "896", "1543", "2025", "2255",
                "10", "17", "22", "23", "64", "77", "107", "109", "114",
                "115", "116", "210", "376", "539", "554", "630", "650",
-               "680", "862", "1533", "2024", "2112"}
+               "680", "862", "1533", "2024", "2112",
+               # v0.6.8: IDs published by the Voidtalon, Pepe,
+               # Sorrowbane (Warcraft Secrets) and Beledar's Spawn
+               # (ConquestCapped) guides.
+               "525", "535", "542", "543", "550", "1161", "1165",
+               "1462", "1525", "1536", "2022", "2215"}
+    # v0.6.8: Waypoints.lua's Retail zone table, each ID read from
+    # the game's UiMap DB2 (primary zone row, wago.tools export).
+    allowed |= {"204", "1565", "63", "114", "1161", "646", "2213",
+                "1165", "42", "207", "2339", "37", "830", "379", "107",
+                "1355", "863", "50", "205", "634", "942", "641", "864",
+                "2022", "52", "83", "102", "1970", "862", "120", "2346"}
     for path in lua_files:
         for mid in re.findall(r"mapID\s*=\s*(\d+)", path.read_text()):
             if mid not in allowed:
                 failures.append(f"{path.name} uses unaudited mapID {mid}")
+    zone_ids = re.findall(r'\["[^"]+"\]\s*=\s*(\d+)',
+                          (ADDON / "Waypoints.lua").read_text())
+    print(f"Waypoints.lua zone table: {len(zone_ids)} mapIDs")
+    for mid in zone_ids:
+        if mid not in allowed:
+            failures.append(f"Waypoints.lua zone table uses unaudited mapID {mid}")
     # Duplicate entry ids across all data files are a hard failure.
     ids = []
     for path in lua_files:

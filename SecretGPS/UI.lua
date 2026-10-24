@@ -20,6 +20,12 @@ local EXPANSION_LABELS = {
     midnight = "Midnight", forever = "WoW: Forever",
 }
 
+-- Pseudo type-filter value: not an entry type (so it stays out of
+-- TYPE_LABELS, which the gate treats as the set of valid types) but
+-- a Type menu option listing only the Mind-Seeker secrets.
+local MINDSEEKER_FILTER = "mindseeker"
+local MINDSEEKER_LABEL = "Mind-Seeker secrets"
+
 local LIST_ROWS = 15
 local STEP_ROWS = 9
 
@@ -47,7 +53,11 @@ end
 local function MatchesFilters(e)
     local db = ns.db
     local tf = (db and db.typeFilter) or "all"
-    if tf ~= "all" and e.type ~= tf then return false end
+    if tf == MINDSEEKER_FILTER then
+        if not e.mindSeeker then return false end
+    elseif tf ~= "all" and e.type ~= tf then
+        return false
+    end
     if db and db.hideCompleted and ns.IsEntrySolved(e) then return false end
     if state.search ~= "" then
         local hay = (tostring(e.name or "") .. " " .. tostring(e.zone or "") .. " " ..
@@ -86,6 +96,7 @@ local function SelectedEntry()
     if state.selectedId and ns.ById then return ns.ById[state.selectedId] end
     return nil
 end
+UI.SelectedEntry = SelectedEntry
 
 local function ShowTip(owner, title, body)
     if not (GameTooltip and GameTooltip.SetOwner) then return end
@@ -141,7 +152,9 @@ function UI.Refresh()
     if UI.msText then UI.msText:SetText(ns.MindSeekerSummary()) end
     if UI.typeBtn then
         local tf = (ns.db and ns.db.typeFilter) or "all"
-        UI.typeBtn:SetText("Type: " .. (tf == "all" and "All" or (TYPE_LABELS[tf] or tf)))
+        UI.typeBtn:SetText("Type: " .. (tf == "all" and "All"
+            or (tf == MINDSEEKER_FILTER and "Mind-Seeker")
+            or (TYPE_LABELS[tf] or tf)))
     end
     for i = 1, LIST_ROWS do
         local row = UI.listRows[i]
@@ -150,7 +163,7 @@ function UI.Refresh()
             if e then
                 local done, total = ns.EntryStepProgress(e)
                 local mark = ns.IsEntrySolved(e) and "|cff7dff7d[done]|r " or ""
-                local tmark = (ns.db and ns.db.tracked and ns.db.tracked.id == e.id) and "|cffe5484d>> |r" or ""
+                local tmark = (ns.cdb and ns.cdb.tracked and ns.cdb.tracked.id == e.id) and "|cffe5484d>> |r" or ""
                 row.text:SetText(tmark .. mark .. tostring(e.name))
                 row.sub:SetText(EntryTypeLabel(e) .. " - " ..
                     (EXPANSION_LABELS[e.expansion] or "") .. "  " .. done .. "/" .. total)
@@ -208,7 +221,7 @@ function UI.Refresh()
         end
     end
     if UI.trackBtn then
-        if e and ns.db and ns.db.tracked and ns.db.tracked.id == e.id then
+        if e and ns.cdb and ns.cdb.tracked and ns.cdb.tracked.id == e.id then
             UI.trackBtn:SetText("Open tracker")
         else
             UI.trackBtn:SetText("Track this secret")
@@ -226,6 +239,15 @@ function UI.Toggle()
     if not state.built then UI.Build() end
     if not UI.frame then return end
     if UI.frame:IsShown() then UI.frame:Hide() else UI.frame:Show() UI.Refresh() end
+end
+
+-- /sgps always opens (SEAN, 2026-10-23: "/sgps should open the
+-- addon"); closing is the X button, Escape, or the minimap button.
+function UI.Open()
+    if not state.built then UI.Build() end
+    if not UI.frame then return end
+    UI.frame:Show()
+    UI.Refresh()
 end
 
 -- Text size (SEAN, 2026-10-23: the guide text read small). The
@@ -269,6 +291,10 @@ function UI.Build()
     local f = CreateFrame("Frame", "SecretGPSFrame", UIParent, "BackdropTemplate")
     f:SetSize(940, 640)
     f:SetPoint("CENTER")
+    -- Escape closes the catalog, like the game's own panels.
+    if type(UISpecialFrames) == "table" then
+        table.insert(UISpecialFrames, "SecretGPSFrame")
+    end
     f:SetMovable(true)
     f:EnableMouse(true)
     f:SetClampedToScreen(true)
@@ -347,7 +373,7 @@ function UI.Build()
     end)
     typeBtn:SetScript("OnEnter", function(self)
         ShowTip(self, "Filter by type",
-            "Choose which reward type the catalog shows: mounts, pets, toys and more, each with its count.")
+            "Choose which reward type the catalog shows: mounts, pets, toys and more, each with its count - or just the Mind-Seeker secrets.")
     end)
     typeBtn:SetScript("OnLeave", HideTip)
     UI.typeBtn = typeBtn
@@ -400,19 +426,23 @@ function UI.Build()
     end
     ToggleTypeMenu = function()
         if typeMenu:IsShown() then typeMenu:Hide() return end
-        local counts, order = {}, {}
+        local counts, order, ms = {}, {}, 0
         for i = 1, #ns.Entries do
             local t = ns.Entries[i].type
             if t then
                 if not counts[t] then order[#order + 1] = t end
                 counts[t] = (counts[t] or 0) + 1
             end
+            if ns.Entries[i].mindSeeker then ms = ms + 1 end
         end
         table.sort(order, function(a, b)
             return (TYPE_LABELS[a] or a) < (TYPE_LABELS[b] or b)
         end)
         local cur = (ns.db and ns.db.typeFilter) or "all"
         local items = { { value = "all", label = "All types", count = #ns.Entries } }
+        if ms > 0 then
+            items[#items + 1] = { value = MINDSEEKER_FILTER, label = MINDSEEKER_LABEL, count = ms }
+        end
         for i = 1, #order do
             items[#items + 1] = { value = order[i],
                 label = TYPE_LABELS[order[i]] or order[i], count = counts[order[i]] }
@@ -687,9 +717,9 @@ function UI.Build()
     stepDown:SetScript("OnLeave", HideTip)
 
     local complete = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-    complete:SetSize(220, 22)
+    complete:SetSize(160, 22)
     complete:SetPoint("LEFT", stepDown, "RIGHT", 16, 0)
-    complete:SetText("Mark whole secret solved")
+    complete:SetText("Mark secret solved")
     complete:SetScript("OnClick", function()
         local e = SelectedEntry()
         if e then ns.ToggleEntryComplete(e) UI.Refresh() end
@@ -702,13 +732,13 @@ function UI.Build()
     UI.completeBtn = complete
 
     local trackBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-    trackBtn:SetSize(150, 22)
+    trackBtn:SetSize(140, 22)
     trackBtn:SetPoint("LEFT", complete, "RIGHT", 8, 0)
     trackBtn:SetText("Track this secret")
     trackBtn:SetScript("OnClick", function()
         local e = SelectedEntry()
         if e and ns.Tracker then
-            if ns.db and ns.db.tracked and ns.db.tracked.id == e.id then
+            if ns.cdb and ns.cdb.tracked and ns.cdb.tracked.id == e.id then
                 ns.Tracker.Toggle()
             else
                 ns.Tracker.Start(e)
@@ -721,6 +751,21 @@ function UI.Build()
     end)
     trackBtn:SetScript("OnLeave", HideTip)
     UI.trackBtn = trackBtn
+
+    local pinAll = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    pinAll:SetSize(90, 22)
+    pinAll:SetPoint("LEFT", trackBtn, "RIGHT", 8, 0)
+    pinAll:SetText("Pin all")
+    pinAll:SetScript("OnClick", function()
+        local e = SelectedEntry()
+        if e and ns.PinAllRemaining then ns.PinAllRemaining(e) end
+    end)
+    pinAll:SetScript("OnEnter", function(self)
+        ShowTip(self, "Pin all",
+            "Add a TomTom waypoint for every unfinished step of the selected secret that has coordinates - made for the long lists (crystals, books, spawn points). Needs TomTom.")
+    end)
+    pinAll:SetScript("OnLeave", HideTip)
+    UI.pinAllBtn = pinAll
 
     local ds = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ds:SetPoint("BOTTOMRIGHT", -16, 10)

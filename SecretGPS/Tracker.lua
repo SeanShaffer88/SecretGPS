@@ -5,7 +5,7 @@
 -- (TomTom or native, per the waypoint provider setting), advances
 -- when a step is done - automatically for quest-flag steps, via the
 -- Done button for manual ones - and announces completion.
--- Tracking state persists in SavedVariables (ns.db.tracked).
+-- Tracking state persists in SavedVariables (ns.cdb.tracked).
 local _, ns = ...
 
 local Tracker = {}
@@ -15,7 +15,7 @@ local frame, nameFS, countFS, stepFS, zoneFS, doneBtn, barFill
 local soundPlayedFor -- entry id the completion sound already played for
 
 local function Current()
-    local t = ns.db and ns.db.tracked
+    local t = ns.cdb and ns.cdb.tracked
     if not t or not t.id then return nil end
     local e = ns.ById and ns.ById[t.id]
     if not e then return nil end
@@ -175,7 +175,19 @@ function Tracker.Refresh()
     nameFS:SetText(tostring(e.name))
     if ns.IsEntrySolved(e) then
         if barFill then barFill:SetWidth(302) end
-        countFS:SetText("Secret complete - all " .. total .. " steps done.")
+        -- Solved does not always mean every step was ticked: the
+        -- reward may already be in the journal, or the game's own
+        -- completion flags may be set. Say which.
+        local how
+        if done == total then
+            how = "all " .. total .. " steps done."
+        elseif ns.IsCollected and ns.IsCollected(e) then
+            how = "reward already collected (" .. done .. " of " .. total .. " steps ticked)."
+        else
+            how = "the game records it as done (" .. done .. " of " .. total .. " steps ticked)."
+        end
+        countFS:SetText("Secret complete - " .. how)
+        Tracker.lastCountText = countFS:GetText()
         stepFS:SetText("You have everything this guide covers. Pick another secret from the catalog (/sgps) whenever you are ready.")
         zoneFS:SetText(tostring(e.reward or ""))
         doneBtn:SetText("Done")
@@ -192,7 +204,7 @@ end
 local function GotoStep(idx, setWay)
     local e = Current()
     if not e then return end
-    ns.db.tracked.step = idx
+    ns.cdb.tracked.step = idx
     Build()
     frame:Show()
     Tracker.Refresh()
@@ -209,9 +221,9 @@ function Tracker.Start(entry, stepIdx)
         ns.Print("That secret has no steps to track.")
         return
     end
-    if not ns.db then return end
+    if not ns.cdb then return end
     local idx = stepIdx or FirstUndone(e, 1) or 1
-    ns.db.tracked = { id = e.id, step = idx }
+    ns.cdb.tracked = { id = e.id, step = idx }
     if ns.IsEntrySolved(e) then soundPlayedFor = e.id end -- no fanfare for review opens
     Build()
     frame:Show()
@@ -226,7 +238,7 @@ function Tracker.Start(entry, stepIdx)
 end
 
 function Tracker.Stop()
-    if ns.db then ns.db.tracked = nil end
+    if ns.cdb then ns.cdb.tracked = nil end
     if frame then frame:Hide() end
     ns.Print("Tracking stopped.")
     if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
@@ -282,8 +294,11 @@ function Tracker.Next()
     if not ns.IsStepDone(e, idx) then
         ns.ToggleStep(e, idx)
     end
-    local nxt = FirstUndone(e, idx + 1)
-    if nxt then
+    -- Wrap to earlier unfinished steps (a guide tracked from a later
+    -- step with Trk), the same way OnQuestUpdate does - otherwise
+    -- Done on the last step leaves the player stuck on it.
+    local nxt = FirstUndone(e, idx + 1) or FirstUndone(e, 1)
+    if nxt and nxt ~= idx then
         GotoStep(nxt, true)
     else
         Tracker.Refresh()
@@ -310,7 +325,7 @@ function Tracker.OnQuestUpdate()
                 ns.Print("Step done - advancing your tracker.")
                 GotoStep(nxt, true)
             else
-                ns.db.tracked.step = nxt
+                ns.cdb.tracked.step = nxt
                 if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
             end
             return

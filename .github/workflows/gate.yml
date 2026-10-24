@@ -1,0 +1,56 @@
+# Runs the out-of-game gate (Lua parse, TOC cross-check, data audits,
+# mocked-client harness for both TOCs) and builds both zips on every
+# push and pull request. Pushing a v* tag also creates a pre-release
+# with the two zips attached, replacing the manual upload + blob audit.
+name: gate
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install gate dependencies
+        run: python -m pip install luaparser==4.2.0 lupa==2.8
+      - name: Gate
+        run: python tools/gate.py
+      - name: Package
+        run: python tools/package.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SecretGPS-zips
+          path: SecretGPS-*.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: gate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: SecretGPS-zips
+      - name: Check the tag matches the addon version
+        run: |
+          want="v$(grep -oP '^VERSION = "\K[^"]+' tools/package.py)"
+          test "$want" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME != $want"; exit 1; }
+      - name: Create pre-release with both zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" SecretGPS-*.zip \
+            --prerelease --title "SecretGPS $GITHUB_REF_NAME" \
+            --notes "See CHANGELOG.md for this version's changes."
