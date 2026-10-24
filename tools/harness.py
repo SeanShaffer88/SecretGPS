@@ -138,6 +138,19 @@ try("waypoint on a mapID step", function()
     end
     note("no mapID step found (allowed only for forever toc)")
 end)
+try("zone-table pin: retail resolves, forever keeps /way", function()
+    local retail = NS.Entries[1] and NS.Entries[1].game == "retail"
+    local step = { text = "t", zone = retail and "Boralus" or "Westfall", x = 61.5, y = 83.6 }
+    WAYPOINT = nil
+    local ok = NS.SetWaypoint(step, "zone test")
+    if retail then
+        assert(ok == true and WAYPOINT and WAYPOINT.mapID == 1161,
+            "Boralus step did not pin via the zone table")
+    else
+        assert(ok == false and WAYPOINT == nil, "forever step pinned via a retail map ID")
+    end
+    assert(step.mapID == nil, "SetWaypoint mutated the data step")
+end)
 try("quest-flag step reads done (47826)", function()
     for i = 1, #NS.Entries do
         local e = NS.Entries[i]
