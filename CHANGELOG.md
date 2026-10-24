@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.6.8 — 2026-10-23
+
+- **14 guides completed from their source pages**: Poseidus (all 5
+  spawn points), Voidtalon of the Dark Star (all 28 Edge of Reality
+  spots, with map pins), Terky, Pepe (whistle + 13 costume pins),
+  Nightbane's 5-crystal route, Endgineer Omegaplugg (summon button and
+  bomb sequence), Mrrl (unlock + both full trading chains), the Secret
+  Fish list, Trashmaster (both factions), Gem of Acquiescence (all 5
+  scrolls), Deepstar Aurelid, Sorrowbane, Voidfire Deathcycle (all six
+  parts) and Beledar's Spawn (all 20 spawn points). Corrected details
+  the earlier summaries had wrong: Mrrl unlocks through the A Safer
+  Place escort, Sorrowbane needs four stacked buffs (nothing is pulled
+  from a stone), and Voidtalon portals respawn every 2–8+ hours.
+- **Pins for more steps**: on Retail, steps that give a zone and
+  coordinates but no map ID now resolve through a table of 41 zone map
+  IDs and set a real pin instead of printing `/way`.
+- **Pin all**: a new catalog button (and `/sgps pinall`) drops a
+  TomTom waypoint on every unfinished step of a secret at once.
+- **Instant solve on collect**: learning a mount, pet or toy refreshes
+  the catalog and tracker immediately; the tracker's completion line
+  now says whether the reward was already collected or every step was
+  done.
+- **Mind-Seeker filter** in the Type menu.
+- **Per-character progress**: manual ticks and the tracked secret
+  move to a per-character store (settings stay account-wide). Each
+  character is seeded once from the old shared ticks.
+- **`/sgps` opens the catalog** — it no longer toggles an open
+  window shut. Close with the X button, Escape (newly supported) or
+  `/sgps close`.
+- **`/sa` removed** — a short alias other addons also claim.
+  `/sgps` and `/secretgps` remain.
+- Tooling: the gate fails when a data fix targets a missing entry id,
+  audits the zone-table map IDs, and runs in GitHub Actions on every
+  push (tagged versions publish both zips as a pre-release).
+  `.gitattributes` pins LF line endings.
+
 ## 0.6.7 — 2026-10-23
 
 - **Tracker Done no longer gets stuck on the last step**: when a

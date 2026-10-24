@@ -6,7 +6,7 @@
 -- navigation and checklist display only.
 local ADDON, ns = ...
 
-ns.VERSION = "0.6.7"
+ns.VERSION = "0.6.8"
 ns.Entries = ns.Entries or {}
 ns.ById = {}
 
@@ -207,9 +207,11 @@ local function SlashHandler(msg)
         Print("manual progress cleared (quest-flag progress is read from the game and is unaffected).")
         if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
     elseif cmd == "help" then
-        Print("Commands: /sgps - toggle catalog | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps pinall - TomTom pins for every unfinished step | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
+        Print("Commands: /sgps - open the catalog (/sgps close, Esc or X to close) | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps pinall - TomTom pins for every unfinished step | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
+    elseif cmd == "close" then
+        if ns.UI and ns.UI.frame then ns.UI.frame:Hide() end
     else
-        if ns.UI and ns.UI.Toggle then ns.UI.Toggle() end
+        if ns.UI and ns.UI.Open then ns.UI.Open() end
     end
 end
 
@@ -256,7 +258,6 @@ loader:SetScript("OnEvent", function(_, event, arg1)
         BuildIndex()
         SLASH_SECRETSGPS1 = "/secretgps"
         SLASH_SECRETSGPS2 = "/sgps"
-        SLASH_SECRETSGPS3 = "/sa"
         SlashCmdList["SECRETSGPS"] = SlashHandler
         if ns.UI and ns.UI.Build then ns.UI.Build() end
         if ns.Tracker and ns.Tracker.Restore then ns.Tracker.Restore() end

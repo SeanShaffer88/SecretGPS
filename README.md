@@ -11,9 +11,9 @@ See also: `FEATURES.md` (the full feature list), `DESCRIPTION.md` (store-listing
 - **Categorized catalog** — browse by reward type (mounts, pets, toys, transmog, titles, questlines, and more), expansion, and whether a secret is solo, group, or time-gated. Search by name, zone, reward, or words inside a secret's steps.
 - **Step-by-step guides** — every entry is a short, ordered route written for in-game use, with prerequisites, difficulty, estimated time, and time-gate/RNG notes up front.
 - **SecretTracker window** — hit **Track this secret** (or **Trk** on any single step to start from there) and a small window stays on screen guiding you step by step: current step, progress %, one-click waypoint, a Done button that ticks the step and advances, and automatic advancement when the game itself completes a quest-flag step. Tracking survives reloads.
-- **Waypoints** — steps with published coordinates get a map pin in one click: through **TomTom** if you have it installed, otherwise Blizzard's native waypoint — your choice (`/sgps wp auto|native|tomtom`). Steps without a verified map ID print a copyable `/way` line instead.
-- **Progress that knows** — steps tied to hidden quest flags are checked against the game itself, so a step you finished months ago is already ticked. Anything else can be ticked manually, and progress is saved between sessions.
-- **Mind-Seeker tracker** — the catalog tracks the secrets that count toward the Mind-Seeker Feat of Strength and shows how close you are to the 17-of-34 needed for the title.
+- **Waypoints** — steps with published coordinates get a map pin in one click: through **TomTom** if you have it installed, otherwise Blizzard's native waypoint — your choice (`/sgps wp auto|native|tomtom`). On Retail, steps that give only a zone and coordinates still get a pin through a built-in zone map table; anything else prints a copyable `/way` line. With TomTom, **Pin all** drops a pin on every unfinished step at once — made for the long lists (crystals, books, spawn points).
+- **Progress that knows** — steps tied to hidden quest flags are checked against the game itself, so a step you finished months ago is already ticked. Learning a mount, pet or toy solves its secret on the spot. Anything else can be ticked manually; ticks and tracking are saved per character.
+- **Mind-Seeker tracker** — the catalog tracks the secrets that count toward the Mind-Seeker Feat of Strength, shows how close you are to the 17-of-34 needed for the title, and the Type menu can list just those secrets.
 - **Looks the part** — both windows are styled after the classic quest log: a dark frame, a black list panel with gold titles, and parchment guide pages with ink text. A book button lives on your minimap: left-click for the catalog, right-click for the tracker, drag to move it.
 
 ## The catalog (114 secrets)
@@ -26,10 +26,11 @@ Every entry credits its source guide in-game. Coordinates appear only where a so
 
 ## Commands
 
-- `/sgps` or `/secretgps` (or `/sa`) — open/close the catalog
+- `/sgps` or `/secretgps` — open the catalog (`/sgps close`, Esc or the X button close it)
 - `/sgps track` — show/hide the SecretTracker window
 - `/sgps untrack` — stop tracking
 - `/sgps wp auto|native|tomtom` — choose the waypoint provider
+- `/sgps pinall` — TomTom pins for every unfinished step of the selected (or tracked) secret
 - `/sgps text` — cycle the text size (100–145%, default 120%)
 - `/sgps mindseeker` — print your Mind-Seeker progress
 - `/sgps debug` — version, entry count, and API availability diagnostics
@@ -42,10 +43,10 @@ Unzip so the `SecretGPS` folder sits in your client's `Interface/AddOns/` folder
 
 ## Honest limits
 
-- v0.6.7 is a pre-release build for in-game testing. Retail data is transcribed from community guides (chiefly Warcraft Secrets, the Secret Finding community's guide site, plus Wowhead, Icy Veins, Method and Lost WOW) and verified against patch 12.1.5 documentation. The addon itself has been run in the live Retail client — loading and catalog rendering are verified (2026-10-23) — but not every entry has been walked end-to-end in game, and the v0.6.5–v0.6.7 changes await a full walkthrough.
-- Renamed from SecretAtlas in v0.4.0, and to SecretGPS in v0.5.0. The SavedVariables store was renamed each time, so any progress from earlier test builds resets once on upgrade.
+- v0.6.8 is a pre-release build for in-game testing. Retail data is transcribed from community guides (chiefly Warcraft Secrets, the Secret Finding community's guide site, plus Wowhead, Icy Veins, Method and Lost WOW) and verified against patch 12.1.5 documentation. The addon itself has been run in the live Retail client — loading and catalog rendering are verified (2026-10-23) — but not every entry has been walked end-to-end in game, and the v0.6.5–v0.6.8 changes await a full walkthrough.
+- Renamed from SecretAtlas in v0.4.0, and to SecretGPS in v0.5.0. The SavedVariables store was renamed each time, so any progress from earlier test builds resets once on upgrade. v0.6.8 moves manual ticks to a per-character store; each character starts from the old shared ticks once.
 - WoW: Forever entries come from the Forever beta and must be re-verified on the live client after its November 4, 2026 launch.
-- A few entries are still summaries where full community steps could not be extracted (some Midnight pets and a handful of older pets/toys). Those entries say so in their steps rather than guessing. The four v0.2 summary mount entries (Nazjatar Blood Serpent, Child of Torcali, Bound Shadehound, Xy Trustee's Gearglider) and the Library Books locations were completed in v0.3.0 from Warcraft Secrets, Icy Veins, Blizzard Watch, Method and Lost WOW guides.
+- A few entries are still summaries where full community steps could not be extracted (some Midnight pets, plus the broad sets — hidden artifact appearances, hunter tomes, Mechagon, Gara — which point to their per-item guides). v0.6.8 completed 14 more from their source guides (Poseidus, Voidtalon, Terky, Pepe, Nightbane, Omegaplugg, Mrrl, Secret Fish, Trashmaster, Gem of Acquiescence, Deepstar Aurelid, Sorrowbane, Voidfire Deathcycle, Beledar's Spawn). Those entries say so in their steps rather than guessing. The four v0.2 summary mount entries (Nazjatar Blood Serpent, Child of Torcali, Bound Shadehound, Xy Trustee's Gearglider) and the Library Books locations were completed in v0.3.0 from Warcraft Secrets, Icy Veins, Blizzard Watch, Method and Lost WOW guides.
 - SecretGPS only displays information and sets waypoints. It does not automate gameplay, and it never touches combat data.
 
 ## Screenshots

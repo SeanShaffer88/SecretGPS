@@ -241,6 +241,15 @@ function UI.Toggle()
     if UI.frame:IsShown() then UI.frame:Hide() else UI.frame:Show() UI.Refresh() end
 end
 
+-- /sgps always opens (SEAN, 2026-10-23: "/sgps should open the
+-- addon"); closing is the X button, Escape, or the minimap button.
+function UI.Open()
+    if not state.built then UI.Build() end
+    if not UI.frame then return end
+    UI.frame:Show()
+    UI.Refresh()
+end
+
 -- Text size (SEAN, 2026-10-23: the guide text read small). The
 -- setting scales the two addon windows, so text, layout and
 -- buttons grow together and nothing can overlap at any size.
@@ -282,6 +291,10 @@ function UI.Build()
     local f = CreateFrame("Frame", "SecretGPSFrame", UIParent, "BackdropTemplate")
     f:SetSize(940, 640)
     f:SetPoint("CENTER")
+    -- Escape closes the catalog, like the game's own panels.
+    if type(UISpecialFrames) == "table" then
+        table.insert(UISpecialFrames, "SecretGPSFrame")
+    end
     f:SetMovable(true)
     f:EnableMouse(true)
     f:SetClampedToScreen(true)

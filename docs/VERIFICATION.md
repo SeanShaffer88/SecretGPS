@@ -260,3 +260,19 @@ passes after it.
 | Packaging: v0.6.7 Retail + Forever zips, contents == TOC lists | PASS | Partially Verified |
 | GitHub publish / release | NOT DONE — local commit only | **Unverified** |
 | In-game — Done wraps on a Trk-started guide | NOT RUN | **Unverified** |
+
+## v0.6.8 — content completion + nine improvements (2026-10-23)
+
+Fourteen guide entries transcribed from their source pages (Warcraft
+Secrets per-secret guides, Wowhead's Poseidus guide and Voidfire
+Deathcycle article, ConquestCapped's Beledar's Spawn list, wow.gg for
+the Beledar's Shadow timer). Zone-table map IDs read from the game's
+UiMap DB2 (wago.tools CSV export, primary zone rows only).
+
+| Check | Result | Label |
+|---|---|---|
+| Gate: schema 92 + 22 entries 0 problems, mapID audit incl. 12 newly guide-published IDs and the 41-ID zone table, fix-id check (an injected typo was confirmed to FAIL the gate), 4-way version 0.6.8 | PASS (exit 0) | Partially Verified |
+| Harness, both TOCs — new scenarios: learning a mount solves the tracked secret and the tracker says "collected" (FAILS on the v0.6.7 code); zone-table pin (Retail resolves Boralus to 1161, Forever keeps /way, data step not mutated); Pin all (refuses without TomTom, pins exactly the unfinished pinnable steps, 28 for Voidtalon, skips ticked); v1 save migrates to the per-character store and seeds an alt independently; Mind-Seeker filter; /sgps opens and never closes, /sgps close closes, /sa gone | PASS | Partially Verified |
+| Packaging: v0.6.8 Retail + Forever zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub Actions workflow | Committed; first run happens on push — NOT yet observed | **Unverified** |
+| In-game: new pins, Pin all with TomTom, collection events, per-character store, Esc closes the catalog | NOT RUN | **Unverified** |
