@@ -1,0 +1,6 @@
+# Store and check out text as LF everywhere (the repository already
+# stores LF; this stops Windows clients warning about CRLF conversion).
+* text=auto eol=lf
+*.zip binary
+*.png binary
+*.jpg binary
