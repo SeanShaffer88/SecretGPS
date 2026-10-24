@@ -243,3 +243,20 @@ button; the icon stays centered.
 | GitHub publish: clean-tree per-file upsert (8 files updated, rest identical-skips) + full-tree blob-SHA audit | ALL MATCH as a union of two runs (run 1's reads failed on tools/harness.py and tools/package.py — API flakiness, remote=None; run 2 confirmed both MATCH) | Verified |
 | GitHub pre-release v0.6.6 with both zips attached | Published, page read back (assets shown 59.1 / 30.5 KB) | Verified |
 | In-game — ring and icon concentric | NOT RUN | **Unverified** |
+
+## v0.6.7 — tracker Done wrap-around (2026-10-23)
+
+Bug found in code review: Tracker.Next searched only forward for
+the next unfinished step, so Done on the last step of a guide
+tracked mid-way (Trk) left the tracker stuck. Next now wraps to the
+first unfinished step, matching OnQuestUpdate. A new harness
+scenario reproduced the failure before the fix (idx stayed 4) and
+passes after it.
+
+| Check | Result | Label |
+|---|---|---|
+| Harness, both TOCs, incl. new "tracker next on last step wraps to earlier undone step" scenario (FAIL before fix, PASS after) | PASS | Partially Verified |
+| Gate (4-way version consistency 0.6.7) | PASS (exit 0) | Partially Verified |
+| Packaging: v0.6.7 Retail + Forever zips, contents == TOC lists | PASS | Partially Verified |
+| GitHub publish / release | NOT DONE — local commit only | **Unverified** |
+| In-game — Done wraps on a Trk-started guide | NOT RUN | **Unverified** |

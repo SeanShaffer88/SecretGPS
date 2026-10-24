@@ -282,8 +282,11 @@ function Tracker.Next()
     if not ns.IsStepDone(e, idx) then
         ns.ToggleStep(e, idx)
     end
-    local nxt = FirstUndone(e, idx + 1)
-    if nxt then
+    -- Wrap to earlier unfinished steps (a guide tracked from a later
+    -- step with Trk), the same way OnQuestUpdate does - otherwise
+    -- Done on the last step leaves the player stuck on it.
+    local nxt = FirstUndone(e, idx + 1) or FirstUndone(e, 1)
+    if nxt and nxt ~= idx then
         GotoStep(nxt, true)
     else
         Tracker.Refresh()

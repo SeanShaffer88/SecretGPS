@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.7 — 2026-10-23
+
+- **Tracker Done no longer gets stuck on the last step**: when a
+  secret was tracked from a later step (the Trk button), ticking
+  the final step with Done had nowhere to advance, leaving the
+  tracker on "Step N of N" with the earlier steps still undone.
+  Done now wraps back to the first unfinished step, the same way
+  quest-flag auto-advance already did.
+- Docs: `/sgps text` added to the README and FEATURES command
+  lists; version labels brought up to date.
+
 ## 0.6.6 — 2026-10-23
 
 - **Minimap ring and icon aligned**: the tracking-border

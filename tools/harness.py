@@ -220,6 +220,30 @@ try("tracker next ticks + advances", function()
     end
     error("no suitable entry for next test")
 end)
+try("tracker next on last step wraps to earlier undone step", function()
+    for i = 1, #NS.Entries do
+        local e = NS.Entries[i]
+        local flagged = false
+        for j = 1, #(e.steps or {}) do
+            if e.steps[j].questFlag then flagged = true end
+        end
+        if e.steps and #e.steps >= 3 and not flagged then
+            NS.db.manualSteps[e.id] = nil
+            NS.db.manualComplete[e.id] = nil
+            if not NS.IsEntrySolved(e) then
+                NS.Tracker.Start(e, #e.steps)
+                NS.Tracker.Next()
+                assert(NS.IsStepDone(e, #e.steps) == true, "next did not tick the last step")
+                local _, idx = NS.Tracker.Current()
+                assert(idx == 1, "next on the last step did not wrap to step 1 (idx=" .. tostring(idx) .. ")")
+                NS.Tracker.Stop()
+                NS.db.manualSteps[e.id] = nil
+                return
+            end
+        end
+    end
+    error("no suitable entry for wrap test")
+end)
 try("tracker skips flag-done step (lucid)", function()
     local e = NS.ById["lucid-nightmare"]
     if not e then note("lucid not in this toc (forever) - skipped") return end
