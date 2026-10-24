@@ -189,7 +189,12 @@ def main():
     allowed = {"13", "46", "885", "895", "896", "1543", "2025", "2255",
                "10", "17", "22", "23", "64", "77", "107", "109", "114",
                "115", "116", "210", "376", "539", "554", "630", "650",
-               "680", "862", "1533", "2024", "2112"}
+               "680", "862", "1533", "2024", "2112",
+               # v0.6.8: IDs published by the Voidtalon, Pepe,
+               # Sorrowbane (Warcraft Secrets) and Beledar's Spawn
+               # (ConquestCapped) guides.
+               "525", "535", "542", "543", "550", "1161", "1165",
+               "1462", "1525", "1536", "2022", "2215"}
     for path in lua_files:
         for mid in re.findall(r"mapID\s*=\s*(\d+)", path.read_text()):
             if mid not in allowed:
