@@ -116,6 +116,13 @@ def schema_failures():
         print(f"schema ({game}): {len(ns.Entries)} entries, "
               f"{len(problems)} problem(s)")
         out += [f"schema {game}: {p}" for p in problems]
+        # Data_Retail_Fixes.lua records any Fix(id) that matched no
+        # entry - a renamed or misspelled id would otherwise make the
+        # correction a silent no-op.
+        misses = ns.FixMisses
+        missed = [misses[i] for i in range(1, len(misses) + 1)] if misses else []
+        print(f"fixes ({game}): {len(missed)} unmatched id(s)")
+        out += [f"fixes {game}: Fix('{m}') matches no entry" for m in missed]
     return out
 
 
