@@ -20,6 +20,12 @@ local EXPANSION_LABELS = {
     midnight = "Midnight", forever = "WoW: Forever",
 }
 
+-- Pseudo type-filter value: not an entry type (so it stays out of
+-- TYPE_LABELS, which the gate treats as the set of valid types) but
+-- a Type menu option listing only the Mind-Seeker secrets.
+local MINDSEEKER_FILTER = "mindseeker"
+local MINDSEEKER_LABEL = "Mind-Seeker secrets"
+
 local LIST_ROWS = 15
 local STEP_ROWS = 9
 
@@ -47,7 +53,11 @@ end
 local function MatchesFilters(e)
     local db = ns.db
     local tf = (db and db.typeFilter) or "all"
-    if tf ~= "all" and e.type ~= tf then return false end
+    if tf == MINDSEEKER_FILTER then
+        if not e.mindSeeker then return false end
+    elseif tf ~= "all" and e.type ~= tf then
+        return false
+    end
     if db and db.hideCompleted and ns.IsEntrySolved(e) then return false end
     if state.search ~= "" then
         local hay = (tostring(e.name or "") .. " " .. tostring(e.zone or "") .. " " ..
@@ -142,7 +152,9 @@ function UI.Refresh()
     if UI.msText then UI.msText:SetText(ns.MindSeekerSummary()) end
     if UI.typeBtn then
         local tf = (ns.db and ns.db.typeFilter) or "all"
-        UI.typeBtn:SetText("Type: " .. (tf == "all" and "All" or (TYPE_LABELS[tf] or tf)))
+        UI.typeBtn:SetText("Type: " .. (tf == "all" and "All"
+            or (tf == MINDSEEKER_FILTER and "Mind-Seeker")
+            or (TYPE_LABELS[tf] or tf)))
     end
     for i = 1, LIST_ROWS do
         local row = UI.listRows[i]
@@ -348,7 +360,7 @@ function UI.Build()
     end)
     typeBtn:SetScript("OnEnter", function(self)
         ShowTip(self, "Filter by type",
-            "Choose which reward type the catalog shows: mounts, pets, toys and more, each with its count.")
+            "Choose which reward type the catalog shows: mounts, pets, toys and more, each with its count - or just the Mind-Seeker secrets.")
     end)
     typeBtn:SetScript("OnLeave", HideTip)
     UI.typeBtn = typeBtn
@@ -401,19 +413,23 @@ function UI.Build()
     end
     ToggleTypeMenu = function()
         if typeMenu:IsShown() then typeMenu:Hide() return end
-        local counts, order = {}, {}
+        local counts, order, ms = {}, {}, 0
         for i = 1, #ns.Entries do
             local t = ns.Entries[i].type
             if t then
                 if not counts[t] then order[#order + 1] = t end
                 counts[t] = (counts[t] or 0) + 1
             end
+            if ns.Entries[i].mindSeeker then ms = ms + 1 end
         end
         table.sort(order, function(a, b)
             return (TYPE_LABELS[a] or a) < (TYPE_LABELS[b] or b)
         end)
         local cur = (ns.db and ns.db.typeFilter) or "all"
         local items = { { value = "all", label = "All types", count = #ns.Entries } }
+        if ms > 0 then
+            items[#items + 1] = { value = MINDSEEKER_FILTER, label = MINDSEEKER_LABEL, count = ms }
+        end
         for i = 1, #order do
             items[#items + 1] = { value = order[i],
                 label = TYPE_LABELS[order[i]] or order[i], count = counts[order[i]] }

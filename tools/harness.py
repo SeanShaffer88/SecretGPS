@@ -331,6 +331,25 @@ try("text scale cycles via slash", function()
     assert(NS.db.settings.textScale ~= before, "text scale did not change")
     SlashCmdList["SECRETSGPS"]("text")
 end)
+try("mind-seeker filter shows only mind-seeker secrets", function()
+    local want = 0
+    for i = 1, #NS.Entries do if NS.Entries[i].mindSeeker then want = want + 1 end end
+    NS.db.typeFilter = "mindseeker"
+    NS.UI.Refresh()
+    local seen = 0
+    for i = 1, #NS.UI.listRows do
+        local r = NS.UI.listRows[i]
+        if r and r:IsShown() and r.entryId then
+            seen = seen + 1
+            assert(NS.ById[r.entryId].mindSeeker, r.entryId .. " is not a Mind-Seeker secret")
+        end
+    end
+    -- the list pages 15 rows at a time, so a full page or all of them
+    assert(seen == math.min(want, #NS.UI.listRows), "saw " .. seen .. " rows, want " .. math.min(want, #NS.UI.listRows))
+    assert(NS.UI.typeBtn:GetText() == (want > 0 and "Type: Mind-Seeker" or NS.UI.typeBtn:GetText()), "type button label")
+    NS.db.typeFilter = "all"
+    NS.UI.Refresh()
+end)
 try("type filter narrows list", function()
     local function visibleIds()
         local ids = {}
