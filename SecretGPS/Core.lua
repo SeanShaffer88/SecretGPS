@@ -157,6 +157,10 @@ local function SlashHandler(msg)
                 (ns.TomTomAvailable() and " (TomTom detected)" or " (TomTom not detected)") ..
                 " - change with /sgps wp auto|native|tomtom")
         end
+    elseif cmd == "pinall" then
+        local e = ns.UI and ns.UI.SelectedEntry and ns.UI.SelectedEntry()
+        if not e and ns.Tracker and ns.Tracker.Current then e = ns.Tracker.Current() end
+        if e then ns.PinAllRemaining(e) else Print("Select or track a secret first.") end
     elseif cmd == "text" then
         if ns.UI and ns.UI.CycleTextScale then ns.UI.CycleTextScale() end
     elseif cmd == "mindseeker" or cmd == "ms" then
@@ -168,7 +172,7 @@ local function SlashHandler(msg)
         Print("manual progress cleared (quest-flag progress is read from the game and is unaffected).")
         if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
     elseif cmd == "help" then
-        Print("Commands: /sgps - toggle catalog | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
+        Print("Commands: /sgps - toggle catalog | /sgps track - show/hide the SecretTracker | /sgps untrack - stop tracking | /sgps wp auto|native|tomtom - waypoint provider | /sgps pinall - TomTom pins for every unfinished step | /sgps text - cycle text size | /sgps mindseeker - Mind-Seeker progress | /sgps debug - diagnostics | /sgps reset - clear manual ticks | /sgps help")
     else
         if ns.UI and ns.UI.Toggle then ns.UI.Toggle() end
     end

@@ -139,3 +139,40 @@ local function SetWaypoint(step, entryName)
     return false
 end
 ns.SetWaypoint = SetWaypoint
+
+-- Queue a TomTom waypoint for every unfinished step that can be
+-- pinned (long lists: the 110 LFH crystals, 37 library books, 28
+-- Voidtalon portal spots). Blizzard's native waypoint holds one pin
+-- at a time, so this needs TomTom. Returns the number queued.
+function ns.PinAllRemaining(entry)
+    if not entry or not entry.steps then return 0 end
+    if not TomTomAvailable() then
+        ns.Print("Pin all needs TomTom - Blizzard's map holds only one waypoint at a time. Use WP on a single step instead.")
+        return 0
+    end
+    local n, skipped = 0, 0
+    for i = 1, #entry.steps do
+        if not (ns.IsStepDone and ns.IsStepDone(entry, i)) then
+            local s = Resolve(entry.steps[i])
+            if s and s.mapID then
+                local ok = pcall(function()
+                    TomTom:AddWaypoint(s.mapID, s.x / 100, s.y / 100, {
+                        title = tostring(entry.name) .. " - step " .. i,
+                        from = "SecretGPS",
+                        persistent = false,
+                    })
+                end)
+                if ok then n = n + 1 else skipped = skipped + 1 end
+            elseif s then
+                skipped = skipped + 1
+            end
+        end
+    end
+    if n == 0 then
+        ns.Print("No unfinished steps of " .. tostring(entry.name) .. " can be pinned.")
+    else
+        ns.Print("Pinned " .. n .. " unfinished step(s) of " .. tostring(entry.name) .. " in TomTom" ..
+            (skipped > 0 and (" (" .. skipped .. " without a map ID - use their /way lines)") or "") .. ".")
+    end
+    return n
+end

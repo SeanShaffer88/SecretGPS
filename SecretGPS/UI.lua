@@ -86,6 +86,7 @@ local function SelectedEntry()
     if state.selectedId and ns.ById then return ns.ById[state.selectedId] end
     return nil
 end
+UI.SelectedEntry = SelectedEntry
 
 local function ShowTip(owner, title, body)
     if not (GameTooltip and GameTooltip.SetOwner) then return end
@@ -687,9 +688,9 @@ function UI.Build()
     stepDown:SetScript("OnLeave", HideTip)
 
     local complete = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-    complete:SetSize(220, 22)
+    complete:SetSize(160, 22)
     complete:SetPoint("LEFT", stepDown, "RIGHT", 16, 0)
-    complete:SetText("Mark whole secret solved")
+    complete:SetText("Mark secret solved")
     complete:SetScript("OnClick", function()
         local e = SelectedEntry()
         if e then ns.ToggleEntryComplete(e) UI.Refresh() end
@@ -702,7 +703,7 @@ function UI.Build()
     UI.completeBtn = complete
 
     local trackBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-    trackBtn:SetSize(150, 22)
+    trackBtn:SetSize(140, 22)
     trackBtn:SetPoint("LEFT", complete, "RIGHT", 8, 0)
     trackBtn:SetText("Track this secret")
     trackBtn:SetScript("OnClick", function()
@@ -721,6 +722,21 @@ function UI.Build()
     end)
     trackBtn:SetScript("OnLeave", HideTip)
     UI.trackBtn = trackBtn
+
+    local pinAll = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    pinAll:SetSize(90, 22)
+    pinAll:SetPoint("LEFT", trackBtn, "RIGHT", 8, 0)
+    pinAll:SetText("Pin all")
+    pinAll:SetScript("OnClick", function()
+        local e = SelectedEntry()
+        if e and ns.PinAllRemaining then ns.PinAllRemaining(e) end
+    end)
+    pinAll:SetScript("OnEnter", function(self)
+        ShowTip(self, "Pin all",
+            "Add a TomTom waypoint for every unfinished step of the selected secret that has coordinates - made for the long lists (crystals, books, spawn points). Needs TomTom.")
+    end)
+    pinAll:SetScript("OnLeave", HideTip)
+    UI.pinAllBtn = pinAll
 
     local ds = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ds:SetPoint("BOTTOMRIGHT", -16, 10)

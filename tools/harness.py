@@ -151,6 +151,34 @@ try("zone-table pin: retail resolves, forever keeps /way", function()
     end
     assert(step.mapID == nil, "SetWaypoint mutated the data step")
 end)
+try("pin all remaining (TomTom) + refuses without TomTom", function()
+    local saved = TomTom
+    TomTom = nil
+    local e = NS.ById["voidtalon"] or NS.Entries[1]
+    assert(NS.PinAllRemaining(e) == 0, "pin all ran without TomTom")
+    local pins = 0
+    TomTom = { AddWaypoint = function() pins = pins + 1 end }
+    NS.db.manualSteps[e.id] = nil
+    local want = 0
+    for i = 1, #e.steps do
+        local s = NS.ResolveWaypointStep(e.steps[i])
+        if s and s.mapID and not NS.IsStepDone(e, i) then want = want + 1 end
+    end
+    local n = NS.PinAllRemaining(e)
+    assert(n == want and pins == want, "pinned " .. n .. "/" .. pins .. ", want " .. want)
+    if e.id == "voidtalon" then assert(n == 28, "voidtalon should pin its 28 portal spots, got " .. n) end
+    -- ticked steps are skipped
+    if want > 0 then
+        for i = 1, #e.steps do
+            local s = NS.ResolveWaypointStep(e.steps[i])
+            if s and s.mapID then NS.ToggleStep(e, i) break end
+        end
+        pins = 0
+        assert(NS.PinAllRemaining(e) == want - 1, "a ticked step was still pinned")
+        NS.db.manualSteps[e.id] = nil
+    end
+    TomTom = saved
+end)
 try("quest-flag step reads done (47826)", function()
     for i = 1, #NS.Entries do
         local e = NS.Entries[i]
@@ -272,6 +300,7 @@ try("wp + track slash commands", function()
     SlashCmdList["SECRETSGPS"]("track")
     SlashCmdList["SECRETSGPS"]("untrack")
     assert(NS.db.tracked == nil, "untrack slash left tracking active")
+    SlashCmdList["SECRETSGPS"]("pinall")
 end)
 try("text scale cycles via slash", function()
     local before = NS.db.settings.textScale
