@@ -175,7 +175,19 @@ function Tracker.Refresh()
     nameFS:SetText(tostring(e.name))
     if ns.IsEntrySolved(e) then
         if barFill then barFill:SetWidth(302) end
-        countFS:SetText("Secret complete - all " .. total .. " steps done.")
+        -- Solved does not always mean every step was ticked: the
+        -- reward may already be in the journal, or the game's own
+        -- completion flags may be set. Say which.
+        local how
+        if done == total then
+            how = "all " .. total .. " steps done."
+        elseif ns.IsCollected and ns.IsCollected(e) then
+            how = "reward already collected (" .. done .. " of " .. total .. " steps ticked)."
+        else
+            how = "the game records it as done (" .. done .. " of " .. total .. " steps ticked)."
+        end
+        countFS:SetText("Secret complete - " .. how)
+        Tracker.lastCountText = countFS:GetText()
         stepFS:SetText("You have everything this guide covers. Pick another secret from the catalog (/sgps) whenever you are ready.")
         zoneFS:SetText(tostring(e.reward or ""))
         doneBtn:SetText("Done")

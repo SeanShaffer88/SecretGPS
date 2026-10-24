@@ -343,6 +343,30 @@ try("hide solved + restore", function()
     assert(visibleIds()[1] == e1.id, "restore did not bring first entry back")
 end)
 try("quest-log update refresh", function() fire("QUEST_LOG_UPDATE") end)
+try("learning a mount solves a tracked secret + says collected", function()
+    local e
+    for i = 1, #NS.Entries do
+        local c = NS.Entries[i].collection
+        if c and c.kind == "mount" and type(c.id) == "number" and #NS.Entries[i].steps >= 2 then
+            e = NS.Entries[i] break
+        end
+    end
+    if not e then note("no mount-collection entry in this toc - skipped") return end
+    local owned = false
+    C_MountJournal = { GetMountInfoByID = function(id)
+        return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, (owned and id == e.collection.id) end }
+    NS.db.manualSteps[e.id] = nil
+    NS.db.manualComplete[e.id] = nil
+    NS.Tracker.Start(e, 1)
+    assert(not NS.IsEntrySolved(e), "entry solved before the mount was learned")
+    owned = true
+    fire("NEW_MOUNT_ADDED", e.collection.id)
+    assert(NS.IsEntrySolved(e), "entry not solved after NEW_MOUNT_ADDED")
+    assert(tostring(NS.Tracker.lastCountText):find("collected"),
+        "tracker text does not say collected: " .. tostring(NS.Tracker.lastCountText))
+    NS.Tracker.Stop()
+    C_MountJournal = nil
+end)
 try("slash toggle close", function() SlashCmdList["SECRETSGPS"]("") end)
 try("minimap button exists + toggles catalog", function()
     local mb = _G["SecretGPSMinimapButton"]

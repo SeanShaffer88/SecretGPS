@@ -200,6 +200,14 @@ local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
 loader:RegisterEvent("PLAYER_LOGIN")
 loader:RegisterEvent("QUEST_LOG_UPDATE")
+-- Learning a mount, pet or toy can solve a secret on the spot
+-- (collection detection), so these refresh exactly like a quest
+-- update. Registration is pcall-guarded: a client without one of
+-- these events errors on RegisterEvent rather than ignoring it.
+local COLLECTION_EVENTS = { NEW_MOUNT_ADDED = true, NEW_PET_ADDED = true, NEW_TOY_ADDED = true }
+for ev in pairs(COLLECTION_EVENTS) do
+    pcall(loader.RegisterEvent, loader, ev)
+end
 loader:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" and arg1 == ADDON then
         EnsureDB()
@@ -214,7 +222,7 @@ loader:SetScript("OnEvent", function(_, event, arg1)
         if ns.UI and ns.UI.Build then ns.UI.Build() end
         if ns.Tracker and ns.Tracker.Restore then ns.Tracker.Restore() end
         Print("loaded v" .. ns.VERSION .. " - " .. #ns.Entries .. " secrets catalogued. /sgps to open.")
-    elseif event == "QUEST_LOG_UPDATE" then
+    elseif event == "QUEST_LOG_UPDATE" or COLLECTION_EVENTS[event] then
         if ns.Tracker and ns.Tracker.OnQuestUpdate then ns.Tracker.OnQuestUpdate() end
         RefreshCatalogSoon()
     end
